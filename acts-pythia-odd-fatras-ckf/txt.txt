@@ -1,0 +1,8 @@
+1. Make ttbar events in Pythia
+2. Make tracks in FATRAS
+3. Reconstruct with CKF
+4. Optimize with Optuna
+
+Mostly stolen from
+
+python main.py
