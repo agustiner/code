@@ -1,0 +1,26 @@
+iwctl
+timedatectl set-ntp True
+reflector
+fdisk
+mkfs.ext4
+genfstab -U /mnt >> /mnt/etc/fstab
+pacstrap /mnt
+ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
+arch-chroot /mnt
+hwclock --systohc
+mkinitcpio -P
+timedatectl set-timezone US/Pacific
+reboot
+systemctl enable wpa_supplicant dhcpcd tlp
+pacman -S man-db xorg xterm xcalib tlp firefox i3-wm thunar maim tumbler feh gvfs base-devel xerces-c git git-lfs pcre gcc make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python python-pip tbb 
+python -m pip install pigments numpy pyyaml orion optuna uproot matplotlib pandas typing_extensions
+systemctl mask systemd-rfkill.service
+systemctl mask systemd-rfkill.socket
+
+git clone https://aur.archlinux.org/mbpfan-git.git
+makepkg -sr
+pacman -U
+
+git clone https://aur.archlinux.org/libinput-three-finger-drag.git
+makepkg -sr
+pacman -U 
