@@ -1,20 +1,15 @@
 import pathlib, acts, acts.examples
+import acts.examples.simulation
+
 from acts.examples.simulation import (
-    addParticleGun,
     MomentumConfig,
     EtaConfig,
     ParticleConfig,
-    addPythia8,
-    addFatras,
     ParticleSelectorConfig,
-    addDigitization,
 )
 from acts.examples.reconstruction import (
-    addSeeding,
     TruthSeedRanges,
-    addCKFTracks,
     CKFPerformanceConfig,
-    addVertexFitting,
     VertexFinder,
     TrackSelectorRanges,
 )
@@ -25,19 +20,14 @@ import os
 def getActsSourcePath():
     return pathlib.Path("/home/user1/code/acts/source")
 
-def getOpenDataDetectorDirectory():
-    """
-    Returns path to ODD files
-
-    Located here so that the sources location can be obtained. The ODD files are not necessarily installed.
-    """
+def getOpenDataDetectorPath():
     return getActsSourcePath() / "thirdparty" / "OpenDataDetector"
+
 
 logger = acts.logging.getLogger("full_chain_odd")
 logger.info("Starting full_chain_odd")
-
 u = acts.UnitConstants
-geoDir = getOpenDataDetectorDirectory()
+oddPath = getOpenDataDetectorPath()
 outputDir = pathlib.Path.cwd() / datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 os.mkdir(outputDir)
 os.mkdir(outputDir / 'pythia')
@@ -48,14 +38,13 @@ os.mkdir(outputDir / 'ckf')
 os.mkdir(outputDir / 'vertexfitting')
 
 # acts.examples.dump_args_calls(locals())  # show python binding calls
-
-oddMaterialMap = geoDir / "data/odd-material-maps.root"
-oddDigiConfig = geoDir / "config/odd-digi-smearing-config.json"
-oddSeedingSel = geoDir / "config/odd-seeding-config.json"
+oddMaterialMap = oddPath / "data/odd-material-maps.root"
+oddDigiConfig = oddPath / "config/odd-digi-smearing-config.json"
+oddSeedingSel = oddPath / "config/odd-seeding-config.json"
 oddMaterialDeco = acts.IMaterialDecorator.fromFile(oddMaterialMap)
 
 detector, trackingGeometry, decorators = getOpenDataDetector(
-    geoDir, mdecorator=oddMaterialDeco
+    oddPath, mdecorator=oddMaterialDeco
 )
 field = acts.ConstantBField(acts.Vector3(0.0, 0.0, 2.0 * u.T))
 rnd = acts.examples.RandomNumbers(seed=42)
@@ -64,7 +53,7 @@ s = acts.examples.Sequencer(events=1, numThreads=-1, outputDir=str(outputDir))
 
 logger.info('Using pythia to make ttbar events.')
 
-addPythia8(
+acts.examples.simulation.addPythia8(
     s,
     hardProcess=["Top:qqbar2ttbar=on"],
     npileup=10,
@@ -76,7 +65,7 @@ addPythia8(
     outputDirRoot=outputDir / 'pythia',
 )
 
-addFatras(
+acts.examples.simulation.addFatras(
     s,
     trackingGeometry,
     field,
@@ -85,7 +74,7 @@ addFatras(
     rnd=rnd,
 )
 
-addDigitization(
+acts.examples.simulation.addDigitization(
     s,
     trackingGeometry,
     field,
@@ -94,7 +83,7 @@ addDigitization(
     rnd=rnd,
 )
 
-addSeeding(
+acts.examples.reconstruction.addSeeding(
     s,
     trackingGeometry,
     field,
@@ -103,7 +92,7 @@ addSeeding(
     outputDirRoot=outputDir / 'seeding',
 )
 
-addCKFTracks(
+acts.examples.reconstruction.addCKFTracks(
     s,
     trackingGeometry,
     field,
@@ -111,7 +100,7 @@ addCKFTracks(
     outputDirRoot=outputDir / 'ckf',
 )
 
-addVertexFitting(
+acts.examples.reconstruction.addVertexFitting(
     s,
     field,
     TrackSelectorRanges(pt=(1.0 * u.GeV, None), absEta=(None, 3.0), removeNeutral=True),
