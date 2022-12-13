@@ -12,7 +12,7 @@ mkinitcpio -P
 timedatectl set-timezone US/Pacific
 reboot
 systemctl enable wpa_supplicant dhcpcd tlp
-pacman -S man-db xorg xterm xcalib tlp firefox i3-wm thunar maim tumbler feh gvfs base-devel xerces-c git git-lfs pcre gcc make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python python-pip tbb 
+pacman -S man-db xterm xcalib tlp firefox i3-wm thunar maim tumbler feh gvfs base-devel xorg unrar unzip wget curl xerces-c git git-lfs pcre gcc make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python python-pip tbb z3
 python -m pip install pigments numpy pyyaml orion optuna uproot matplotlib pandas typing_extensions
 systemctl mask systemd-rfkill.service
 systemctl mask systemd-rfkill.socket

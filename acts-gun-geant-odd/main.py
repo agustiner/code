@@ -9,29 +9,31 @@ from acts.examples.simulation import addParticleGun, addGeant4, EtaConfig, Momen
 from acts.examples.odd import getOpenDataDetector
 from pathlib import Path
 
-def runGeant4(
-    geometryService,
-    trackingGeometry,
-    field,
-    outputDir
-):
+def geant_sequencer():
+    detector, trackingGeometry, decorators = getOpenDataDetector(
+        Path("/home/user1/code/acts/source/thirdparty/OpenDataDetector")
+    )
+    
+    field = acts.ConstantBField(acts.Vector3(0, 0, 2 * acts.UnitConstants.T))
+    
     s = acts.examples.Sequencer(events=2, numThreads=1)
     s.config.logLevel = acts.logging.INFO
     rnd = acts.examples.RandomNumbers()
     
     addParticleGun(
         s,
-        MomentumConfig(1.0 * acts.UnitConstants.GeV, 10.0 * acts.UnitConstants.GeV, True),
-        EtaConfig(-2.0, 2.0),
-        ParticleConfig(1, acts.PdgParticle.eMuon, True),
-        rnd=rnd,
+        MomentumConfig(20.0 * acts.UnitConstants.GeV, 30.0 * acts.UnitConstants.GeV, True),
+        ParticleConfig(1, acts.PdgParticle.eElectron, True),
+        multiplicity = 7,
+        rnd = rnd,
     )
 
+    outputDir = Path.cwd() / datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
     os.mkdir(outputDir)
     os.mkdir(outputDir / 'geant')
     addGeant4(
         s,
-        geometryService,
+        detector.geometryService,
         trackingGeometry,
         field,
         outputDirRoot = outputDir / 'geant',
@@ -42,11 +44,5 @@ def runGeant4(
 
 
 if "__main__" == __name__:
-    
-    detector, trackingGeometry, decorators = getOpenDataDetector(
-        Path("/home/user1/code/acts/source/thirdparty/OpenDataDetector")
-    )
-    field = acts.ConstantBField(acts.Vector3(0, 0, 2 * acts.UnitConstants.T))
-    
-    outputDir = Path.cwd() / datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    runGeant4(detector.geometryService, trackingGeometry, field, outputDir).run()
+    sequencer = geant_sequencer()
+    sequencer.run()
