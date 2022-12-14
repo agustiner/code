@@ -110,8 +110,8 @@ class Objective:
             "deltaRMax",
         ]
 
-        outputDir = Path(curDir / "Output_CKF")
-        outputfile = curDir / "Output_CKF/performance_ckf.root"
+        outputDir = Path(curDir)
+        outputfile = curDir / "performance_ckf.root"
         outputDir.mkdir(exist_ok=True)
         run_ckf(params, keys, outputDir)
         rootFile = uproot.open(outputfile)
@@ -121,7 +121,7 @@ class Objective:
             rootFile["duplicaterate_tracks"].member("fElements")[0]
         )
 
-        timingfile = curDir / "Output_CKF/timing.tsv"
+        timingfile = curDir / "timing.tsv"
         timing = pd.read_csv(timingfile, sep="\t")
         time_ckf = float(
             timing[timing["identifier"].str.match("Algorithm:TrackFindingAlgorithm")][
