@@ -30,28 +30,20 @@ import warnings
 import yaml
 
 matplotlib.use("pdf")
-srcDir = Path(__file__).resolve().parent
 curDir = Path(os.getcwd())
+srcDir = curDir
 
-def run_sequence(params, names, outDir):
-
-    if len(params) != len(names):
-        raise Exception("Length of Params must equal names")
+def run_trial(params, values):
+    if len(params) != len(values):
+        raise Exception("Length of Params must equal values")
 
     sequence_script = srcDir / "main-sequence.py"
-    nevts = "--nEvents=1"
-    indir = "--indir=" + str(curDir)
-    outdir = "--output=" + str(outDir)
-
     ret = ["python"]
     ret.append(sequence_script)
-    ret.append(nevts)
-    ret.append(indir)
-    ret.append(outdir)
 
     i = 0
     for param in params:
-        arg = "--sf_" + names[i] + "=" + str(param)
+        arg = "--sf_" + values[i] + "=" + str(param)
         ret.append(arg)
         i += 1
 
@@ -98,11 +90,9 @@ class Objective:
             "deltaRMin",
             "deltaRMax",
         ]
-
-        outputDir = Path(curDir)
+        
+        run_trial(params, keys)
         outputfile = curDir / "performance_ckf.root"
-        outputDir.mkdir(exist_ok=True)
-        run_sequence(params, keys, outputDir)
         rootFile = uproot.open(outputfile)
         self.res["eff"].append(rootFile["eff_particles"].member("fElements")[0])
         self.res["fakerate"].append(rootFile["fakerate_tracks"].member("fElements")[0])
@@ -135,14 +125,11 @@ class Objective:
 
 
 def main():
+    # Parameters.
     k_dup = 5
     k_time = 5
-
-    # Initializing the objective (score) function
-    objective = Objective(k_dup, k_time)
-
-    """
-    start_values = {
+    num_trials = 3
+    initial_param_dict = {
         "maxSeedsPerSpM": 1,
         "cotThetaMax": 7.40627,
         "sigmaScattering": 50,
@@ -153,25 +140,27 @@ def main():
         "deltaRMax": 60.0
     }
 
-    """
-    # Optuna logger
+    # Objective function.
+    objective = Objective(k_dup, k_time)
+
+    # Output files.
+    outputDir = Path(curDir)
+    outputDir.mkdir(exist_ok=True)
+
     optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
     study_name = "test_study"
     storage_name = "sqlite:///{}.db".format(study_name)
 
-    # creating a new optuna study
     study = optuna.create_study(
         study_name=study_name,
         storage="sqlite:///{}.db".format(study_name),
         direction="maximize",
         load_if_exists=True,
     )
+    study.enqueue_trial(initial_param_dict)
+    
+    study.optimize(objective, n_trials = num_trials)
 
-    # study.enqueue_trial(start_values)
-    # Start Optimization
-    study.optimize(objective, n_trials=3)
-
-    # Printout the best trial values
     print("Best Trial until now", flush=True)
     for key, value in study.best_trial.params.items():
         print(f"    {key}: {value}", flush=True)
@@ -179,8 +168,8 @@ def main():
     outputDir = Path("OptunaResults")
     outputDir.mkdir(exist_ok=True)
 
-    with open(outputDir / "results.json", "w") as fp:
-        json.dump(study.best_params, fp)
+    with open(outputDir / "results.json", "w") as results_file:
+        json.dump(study.best_params, results_file)
 
 if __name__ == "__main__":
     main()
