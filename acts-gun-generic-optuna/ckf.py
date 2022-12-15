@@ -89,9 +89,7 @@ def getArgumentParser():
         type=float,
         default=60.0,
     )
-
     return parser
-
 
 def runCKFTracks(
     trackingGeometry,

@@ -1,36 +1,3 @@
-#!/usr/bin/env python3
-import sys
-
-import sys
-import os
-import yaml
-import pprint
-import time
-import datetime
-import warnings
-
-import optuna
-import logging
-import uproot
-
-import pathlib
-import matplotlib
-
-matplotlib.use("pdf")
-import matplotlib.pyplot as plt
-import random
-import subprocess
-import multiprocessing
-import numpy as np
-import json
-import array
-import sys
-import argparse
-import pandas as pd
-
-from typing import Optional, Union
-from pathlib import Path
-
 from optuna.visualization import plot_contour
 from optuna.visualization import plot_edf
 from optuna.visualization import plot_intermediate_values
@@ -38,22 +5,46 @@ from optuna.visualization import plot_optimization_history
 from optuna.visualization import plot_parallel_coordinate
 from optuna.visualization import plot_param_importances
 from optuna.visualization import plot_slice
+from pathlib import Path
+from typing import Optional, Union
+import argparse
+import array
+import datetime
+import json
+import logging
+import matplotlib
+import matplotlib.pyplot as plt
+import multiprocessing
+import numpy as np
+import optuna
+import os
+import pandas as pd
+import pathlib
+import pprint
+import random
+import subprocess
+import sys
+import time
+import uproot
+import warnings
+import yaml
 
+matplotlib.use("pdf")
 srcDir = Path(__file__).resolve().parent
 curDir = Path(os.getcwd())
 
-def run_ckf(params, names, outDir):
+def run_sequence(params, names, outDir):
 
     if len(params) != len(names):
         raise Exception("Length of Params must equal names")
 
-    ckf_script = srcDir / "simulate-odd.py"
+    sequence_script = srcDir / "main-sequence.py"
     nevts = "--nEvents=1"
     indir = "--indir=" + str(curDir)
     outdir = "--output=" + str(outDir)
 
     ret = ["python"]
-    ret.append(ckf_script)
+    ret.append(sequence_script)
     ret.append(nevts)
     ret.append(indir)
     ret.append(outdir)
@@ -64,9 +55,7 @@ def run_ckf(params, names, outDir):
         ret.append(arg)
         i += 1
 
-    # Run CKF for the given parameters
     subprocess.call(ret)
-
 
 class Objective:
     def __init__(self, k_dup, k_time):
@@ -113,7 +102,7 @@ class Objective:
         outputDir = Path(curDir)
         outputfile = curDir / "performance_ckf.root"
         outputDir.mkdir(exist_ok=True)
-        run_ckf(params, keys, outputDir)
+        run_sequence(params, keys, outputDir)
         rootFile = uproot.open(outputfile)
         self.res["eff"].append(rootFile["eff_particles"].member("fElements")[0])
         self.res["fakerate"].append(rootFile["fakerate_tracks"].member("fElements")[0])
@@ -146,7 +135,6 @@ class Objective:
 
 
 def main():
-
     k_dup = 5
     k_time = 5
 
@@ -163,7 +151,7 @@ def main():
         "maxPtScattering": 10.0,
         "deltaRMin": 1.0,
         "deltaRMax": 60.0
-}
+    }
 
     """
     # Optuna logger
@@ -193,7 +181,6 @@ def main():
 
     with open(outputDir / "results.json", "w") as fp:
         json.dump(study.best_params, fp)
-
 
 if __name__ == "__main__":
     main()
