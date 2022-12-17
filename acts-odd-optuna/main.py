@@ -26,7 +26,7 @@ def main():
     # Parameters.
     k_dup = 5
     k_time = 5
-    n_trials = 3
+    n_trials = 250
     initial_param_dict = {
         "maxSeedsPerSpM": 1,
         "cotThetaMax": 7.40627,
@@ -38,28 +38,23 @@ def main():
         "deltaRMax": 60.0
     }
 
-    # Objective function.
     objective = main_objective.Objective(k_dup, k_time)
 
-    # Output files.
     outputDir = Path(curDir)
     outputDir.mkdir(exist_ok=True)
 
     optuna.logging.get_logger("optuna").addHandler(logging.StreamHandler(sys.stdout))
     study_name = "test_study"
-    storage_name = "sqlite:///{}.db".format(study_name)
-
     study = optuna.create_study(
-        study_name=study_name,
-        storage="sqlite:///{}.db".format(study_name),
-        direction="maximize",
-        load_if_exists=True,
+        study_name = study_name,
+        storage = "sqlite:///{}.db".format(study_name),
+        direction = "maximize",
+        load_if_exists = True,
     )
     study.enqueue_trial(initial_param_dict)
-    
     study.optimize(objective, n_trials = n_trials)
 
-    print("Best Trial until now")
+    print("Best Trial")
     for key, value in study.best_trial.params.items():
         print(f"{key}: {value}")
 

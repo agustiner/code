@@ -56,13 +56,13 @@ class Objective:
         deltaRMax = trial.suggest_float("deltaRMax", 50, 300)
         
         main_sequence.run(maxSeedsPerSpM,
-                                cotThetaMax,
-                                sigmaScattering,
-                                radLengthPerSeed,
-                                impactMax,
-                                maxPtScattering,
-                                deltaRMin,
-                                deltaRMax)
+                          cotThetaMax,
+                          sigmaScattering,
+                          radLengthPerSeed,
+                          impactMax,
+                          maxPtScattering,
+                          deltaRMin,
+                          deltaRMax)
         
         outputfile = curDir / "performance_ckf.root"
         rootFile = uproot.open(outputfile)
