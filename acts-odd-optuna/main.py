@@ -9,27 +9,16 @@ from pathlib import Path
 from typing import Optional, Union
 import argparse
 import array
-import datetime
 import json
 import logging
-import matplotlib
-import matplotlib.pyplot as plt
 import multiprocessing
 import numpy as np
 import optuna
 import os
-import pandas as pd
-import pathlib
 import pprint
 import random
-import subprocess
 import sys
-import time
-import uproot
-import warnings
-import yaml
 import main_objective
-matplotlib.use("pdf")
 curDir = Path(os.getcwd())
 srcDir = curDir
 
@@ -37,7 +26,7 @@ def main():
     # Parameters.
     k_dup = 5
     k_time = 5
-    num_trials = 3
+    n_trials = 3
     initial_param_dict = {
         "maxSeedsPerSpM": 1,
         "cotThetaMax": 7.40627,
@@ -68,11 +57,11 @@ def main():
     )
     study.enqueue_trial(initial_param_dict)
     
-    study.optimize(objective, n_trials = num_trials)
+    study.optimize(objective, n_trials = n_trials)
 
-    print("Best Trial until now", flush=True)
+    print("Best Trial until now")
     for key, value in study.best_trial.params.items():
-        print(f"    {key}: {value}", flush=True)
+        print(f"{key}: {value}")
 
     outputDir = Path("OptunaResults")
     outputDir.mkdir(exist_ok=True)

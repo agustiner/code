@@ -12,7 +12,6 @@ import acts
 
 from acts import UnitConstants as u
 
-
 def getArgumentParser():
     """Get arguments from command line"""
     parser = argparse.ArgumentParser(description="Command line arguments for CKF")
@@ -100,7 +99,7 @@ def runCKFTracks(
     outputDir: Path,
     NumEvents=1,
     truthSmearedSeeded=False,
-    truthEstimatedSeeded=False,
+    truthEstimatedSeeded=False  ,
     outputCsv=True,
     inputParticlePath: Optional[Path] = None,
     s=None,
