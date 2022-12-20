@@ -22,7 +22,7 @@ def get_study_points(parameter, study):
     return points
 
 def get_study_figure(points, xaxis_string, yaxis_string):
-    figure = pyplot.figure(figsize = (4, 6))
+    figure = pyplot.figure(figsize = (6, 3))
     ax1 = figure.add_subplot()
     ax1.plot(points)
     ax1.set_title(yaxis_string)
@@ -41,3 +41,5 @@ def get_study_plots():
         points = get_study_points(parameter, study)
         fig = get_study_figure(points, "Trial", parameter)
         pyplot.savefig(parameter + '.png', bbox_inches='tight', dpi = 100)
+
+get_study_plots()
