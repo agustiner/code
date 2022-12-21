@@ -1,49 +1,19 @@
-from optuna.visualization import plot_contour
-from optuna.visualization import plot_edf
-from optuna.visualization import plot_intermediate_values
-from optuna.visualization import plot_optimization_history
-from optuna.visualization import plot_parallel_coordinate
-from optuna.visualization import plot_param_importances
-from optuna.visualization import plot_slice
 from pathlib import Path
-from typing import Optional, Union
-import argparse
-import array
-import datetime
-import json
-import logging
-import matplotlib
-import matplotlib.pyplot as plt
-import multiprocessing
-import numpy as np
-import optuna
 import os
-import pandas as pd
-import pathlib
-import pprint
-import random
-import subprocess
-import sys
-import time
+import pandas
 import uproot
-import warnings
-import yaml
-import main_sequence
-
-curDir = Path(os.getcwd())
-srcDir = curDir
+import sequence
 
 class Objective:
-    def __init__(self, k_dup, k_time):
+    def __init__(self):
         self.res = {
             "eff": [],
             "fakerate": [],
             "duplicaterate": [],
             "runtime": [],
         }
-
-        self.k_dup = k_dup
-        self.k_time = k_time
+        self.k_dup = 5
+        self.k_time = 5
 
     def __call__(self, trial):
         maxSeedsPerSpM = trial.suggest_int("maxSeedsPerSpM", 0, 10)
@@ -55,15 +25,16 @@ class Objective:
         deltaRMin = trial.suggest_float("deltaRMin", 0.25, 30)
         deltaRMax = trial.suggest_float("deltaRMax", 50, 300)
         
-        main_sequence.run(maxSeedsPerSpM,
-                          cotThetaMax,
-                          sigmaScattering,
-                          radLengthPerSeed,
-                          impactMax,
-                          maxPtScattering,
-                          deltaRMin,
-                          deltaRMax)
-        
+        sequence.run(maxSeedsPerSpM,
+                     cotThetaMax,
+                     sigmaScattering,
+                     radLengthPerSeed,
+                     impactMax,
+                     maxPtScattering,
+                     deltaRMin,
+                     deltaRMax)
+
+        curDir = Path(os.getcwd())
         outputfile = curDir / "performance_ckf.root"
         rootFile = uproot.open(outputfile)
         self.res["eff"].append(rootFile["eff_particles"].member("fElements")[0])
@@ -73,7 +44,7 @@ class Objective:
         )
 
         timingfile = curDir / "timing.tsv"
-        timing = pd.read_csv(timingfile, sep="\t")
+        timing = pandas.read_csv(timingfile, sep="\t")
         time_ckf = float(
             timing[timing["identifier"].str.match("Algorithm:TrackFindingAlgorithm")][
                 "time_perevent_s"
@@ -92,5 +63,6 @@ class Objective:
             + self.res["duplicaterate"][-1] / self.k_dup
             + self.res["runtime"][-1] / self.k_time
         )
+        score = efficiency - penalty
 
-        return efficiency - penalty
+        return score

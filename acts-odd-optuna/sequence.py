@@ -8,8 +8,9 @@
 # deltaRMin minimum value for deltaR separation in mm
 # deltaRMax maximum value for deltaR separation in mm
 # out
-# some cool fucking shit
-
+# .root file
+# .root file
+# .root file
 
 from acts.examples.reconstruction import (
     addSeeding,
@@ -87,31 +88,31 @@ def run(maxSeedsPerSpM,
     
     acts.examples.simulation.addPythia8(
         s,
-        hardProcess=["Top:qqbar2ttbar=on"],
-        npileup=10,
+        hardProcess = ["Top:qqbar2ttbar=on"],
+        npileup = 10,
         vtxGen=acts.examples.GaussianVertexGenerator(
             stddev=acts.Vector4(0.0125 * u.mm, 0.0125 * u.mm, 55.5 * u.mm, 5.0 * u.ns),
             mean=acts.Vector4(0, 0, 0, 0),
         ),
-        rnd=rnd,
-        outputDirRoot=outputDir
+        rnd = rnd,
+        outputDirRoot = outputDir
     )
     
     acts.examples.simulation.addFatras(
         s,
         trackingGeometry,
         field,
-        outputDirRoot=outputDir,
-        rnd=rnd,
+        outputDirRoot = outputDir,
+        rnd = rnd,
     )
     
     acts.examples.simulation.addDigitization(
         s,
         trackingGeometry,
         field,
-        digiConfigFile=oddDigiConfig,
-        outputDirRoot=outputDir,
-        rnd=rnd,
+        digiConfigFile = oddDigiConfig,
+        outputDirRoot = outputDir,
+        rnd = rnd,
     )
     
     acts.examples.reconstruction.addSeeding(
@@ -123,16 +124,16 @@ def run(maxSeedsPerSpM,
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
             deltaR=(deltaRMin * u.mm, deltaRMax * u.mm),
-            collisionRegion=(-250 * u.mm, 250 * u.mm),
+            collisionRegion = (-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
-            maxSeedsPerSpM=maxSeedsPerSpM,
-            cotThetaMax=cotThetaMax,
-            sigmaScattering=sigmaScattering,
-            radLengthPerSeed=radLengthPerSeed,
-            maxPtScattering=maxPtScattering * u.GeV,
+            maxSeedsPerSpM = maxSeedsPerSpM,
+            cotThetaMax = cotThetaMax,
+            sigmaScattering = sigmaScattering,
+            radLengthPerSeed = radLengthPerSeed,
+            maxPtScattering = maxPtScattering * u.GeV,
             minPt=500 * u.MeV,
-            bFieldInZ=1.99724 * u.T,
-            impactMax=impactMax * u.mm,
+            bFieldInZ = 1.99724 * u.T,
+            impactMax = impactMax * u.mm,
         ),
         TrackParamsEstimationConfig(deltaR=(10.0 * u.mm, None)),
         seedingAlgorithm=SeedingAlgorithm.TruthSmeared
@@ -140,17 +141,18 @@ def run(maxSeedsPerSpM,
         else SeedingAlgorithm.TruthEstimated
         if truthEstimatedSeeded
         else SeedingAlgorithm.Default,
-        geoSelectionConfigFile=oddSeedingSel,
-        outputDirRoot=outputDir,
-        rnd=rnd,
+        geoSelectionConfigFile = oddSeedingSel,
+        outputDirRoot = outputDir,
+        rnd = rnd,
     )
 
     acts.examples.reconstruction.addCKFTracks(
         s,
         trackingGeometry,
         field,
-        CKFPerformanceConfig(ptMin=1.0 * u.GeV, nMeasurementsMin=6),
-        outputDirRoot=outputDir
+        CKFPerformanceConfig(ptMin = 1.0 * u.GeV,
+                             nMeasurementsMin = 6),
+        outputDirRoot = outputDir
     )
     
     s.run()

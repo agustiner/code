@@ -41,5 +41,3 @@ def get_study_plots():
         points = get_study_points(parameter, study)
         fig = get_study_figure(points, "Trial", parameter)
         pyplot.savefig(parameter + '.png', bbox_inches='tight', dpi = 100)
-
-get_study_plots()
