@@ -1,21 +1,25 @@
-from pathlib import Path
 import os
 import pandas
 import uproot
 import sequence
+import numpy
+import json
 
 class Objective:
-    def __init__(self):
-        self.res = {
-            "eff": [],
-            "fakerate": [],
-            "duplicaterate": [],
-            "runtime": [],
-        }
+    def __init__(self, output_path):
         self.k_dup = 5
         self.k_time = 5
+        self.output_path = output_path
+        output_path.mkdir()
 
     def __call__(self, trial):
+        # Run the Sequence, return its score. This needs logging.
+        
+        # Input
+        # trial
+        # Output
+        # score
+        
         maxSeedsPerSpM = trial.suggest_int("maxSeedsPerSpM", 0, 10)
         cotThetaMax = trial.suggest_float("cotThetaMax", 5.0, 10.0)
         sigmaScattering = trial.suggest_float("sigmaScattering", 0.2, 50)
@@ -24,8 +28,14 @@ class Objective:
         maxPtScattering = trial.suggest_float("maxPtScattering", 1, 50)
         deltaRMin = trial.suggest_float("deltaRMin", 0.25, 30)
         deltaRMax = trial.suggest_float("deltaRMax", 50, 300)
+
+        trial_path = self.output_path / ('trial_' + str(trial.number))
+        trial_path.mkdir()
+        root_path = trial_path / "performance_ckf.root"
+        timing_path = trial_path / 'timing.tsv'
         
-        sequence.run(maxSeedsPerSpM,
+        sequence.run(trial_path,
+                     maxSeedsPerSpM,
                      cotThetaMax,
                      sigmaScattering,
                      radLengthPerSeed,
@@ -34,17 +44,32 @@ class Objective:
                      deltaRMin,
                      deltaRMax)
 
-        curDir = Path(os.getcwd())
-        outputfile = curDir / "performance_ckf.root"
-        rootFile = uproot.open(outputfile)
-        self.res["eff"].append(rootFile["eff_particles"].member("fElements")[0])
-        self.res["fakerate"].append(rootFile["fakerate_tracks"].member("fElements")[0])
-        self.res["duplicaterate"].append(
-            rootFile["duplicaterate_tracks"].member("fElements")[0]
-        )
-
-        timingfile = curDir / "timing.tsv"
-        timing = pandas.read_csv(timingfile, sep="\t")
+        # should probably move this somewhere else.
+        root_file_list_path = self.output_path / 'root_file_list.json'
+        if not root_file_list_path.exists():
+            root_file_list = [str(root_path)]
+            with open(root_file_list_path, 'w') as root_file_list_file:
+                json.dump(root_file_list, root_file_list_file)
+            
+        else:
+            with open(root_file_list_path, 'r+') as root_file_list_file:
+                root_file_list = json.load(root_file_list_file)
+                
+                # Because we're reading and replacing this file, we need to
+                # seek and truncate. Replace this with a better function.
+                
+                root_file_list_file.seek(0)
+                root_file_list.append(str(root_path))
+                json.dump(root_file_list, root_file_list_file)
+                root_file_list_file.truncate()
+                
+        # should probably move this somewhere else
+        
+        root_dict = uproot.open(root_path)
+        cur_eff_particles = root_dict["eff_particles"].member("fElements")[0]
+        cur_fakerate_tracks = root_dict["fakerate_tracks"].member("fElements")[0]
+        cur_duplicaterate_tracks = root_dict["duplicaterate_tracks"].member("fElements")[0]
+        timing = pandas.read_csv(timing_path, sep="\t")
         time_ckf = float(
             timing[timing["identifier"].str.match("Algorithm:TrackFindingAlgorithm")][
                 "time_perevent_s"
@@ -55,14 +80,10 @@ class Objective:
                 "time_perevent_s"
             ]
         )
-        self.res["runtime"].append(time_ckf + time_seeding)
+        cur_runtime = time_ckf + time_seeding
 
-        efficiency = self.res["eff"][-1]
-        penalty = (
-            self.res["fakerate"][-1]
-            + self.res["duplicaterate"][-1] / self.k_dup
-            + self.res["runtime"][-1] / self.k_time
-        )
+        efficiency = cur_eff_particles
+        penalty = (cur_fakerate_tracks + cur_duplicaterate_tracks / self.k_dup + cur_runtime / self.k_time)
         score = efficiency - penalty
 
         return score

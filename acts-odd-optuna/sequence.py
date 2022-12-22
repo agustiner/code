@@ -12,6 +12,10 @@
 # .root file
 # .root file
 
+import pathlib
+import acts
+import acts.examples
+import acts.examples.simulation
 from acts.examples.reconstruction import (
     addSeeding,
     TruthSeedRanges,
@@ -21,10 +25,7 @@ from acts.examples.reconstruction import (
     TrackParamsEstimationConfig,
     CKFPerformanceConfig,
     addCKFTracks,
-)
-    
-import pathlib, acts, acts.examples
-import acts.examples.simulation
+)    
 from acts.examples.simulation import (
     MomentumConfig,
     EtaConfig,
@@ -55,22 +56,29 @@ def getActsSourcePath():
 def getOpenDataDetectorPath():
     return getActsSourcePath() / "thirdparty" / "OpenDataDetector"
 
-def run(maxSeedsPerSpM,
+def run(output_path,
+        maxSeedsPerSpM,
         cotThetaMax,
         sigmaScattering,
         radLengthPerSeed,
         impactMax,
         maxPtScattering,
         deltaRMin,
-        deltaRMax,
-        ):
+        deltaRMax):
+    # Run the Sequence, starting from instantiating events and ending
+    # with reconstructed tracks. This sequence may be put into an
+    # optimizer trial function.
+    
+    # Input
+    #
+    # Output
+    # 
+    logger = acts.logging.getLogger("full_chain_odd")
+    logger.info("Starting Sequence")
     truthSmearedSeeded = False
     truthEstimatedSeeded = False
-    logger = acts.logging.getLogger("full_chain_odd")
-    logger.info("Starting full_chain_odd")
     u = acts.UnitConstants
     oddPath = getOpenDataDetectorPath()
-    outputDir = pathlib.Path.cwd()
     oddMaterialMap = oddPath / "data/odd-material-maps.root"
     oddDigiConfig = oddPath / "config/odd-digi-smearing-config.json"
     oddSeedingSel = oddPath / "config/odd-seeding-config.json"
@@ -84,7 +92,7 @@ def run(maxSeedsPerSpM,
     
     s = acts.examples.Sequencer(events = 1,
                                 numThreads = -1,
-                                outputDir = str(outputDir))
+                                outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
         s,
@@ -95,14 +103,14 @@ def run(maxSeedsPerSpM,
             mean=acts.Vector4(0, 0, 0, 0),
         ),
         rnd = rnd,
-        outputDirRoot = outputDir
+        outputDirRoot = output_path
     )
     
     acts.examples.simulation.addFatras(
         s,
         trackingGeometry,
         field,
-        outputDirRoot = outputDir,
+        outputDirRoot = output_path,
         rnd = rnd,
     )
     
@@ -111,7 +119,7 @@ def run(maxSeedsPerSpM,
         trackingGeometry,
         field,
         digiConfigFile = oddDigiConfig,
-        outputDirRoot = outputDir,
+        outputDirRoot = output_path,
         rnd = rnd,
     )
     
@@ -142,7 +150,7 @@ def run(maxSeedsPerSpM,
         if truthEstimatedSeeded
         else SeedingAlgorithm.Default,
         geoSelectionConfigFile = oddSeedingSel,
-        outputDirRoot = outputDir,
+        outputDirRoot = output_path,
         rnd = rnd,
     )
 
@@ -152,7 +160,7 @@ def run(maxSeedsPerSpM,
         field,
         CKFPerformanceConfig(ptMin = 1.0 * u.GeV,
                              nMeasurementsMin = 6),
-        outputDirRoot = outputDir
+        outputDirRoot = output_path
     )
     
     s.run()
