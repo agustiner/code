@@ -1,0 +1,55 @@
+rmmod b43
+rmmod bcma
+rmmod ssb
+rmmod wl
+modprobe wl
+iwctl
+station wlan0 scan
+station wlan0 get-networks
+station wlan0 connect
+timedatectl set-ntp true
+hwclock --systohc
+pacman -Sy
+pacman -S archlinux-keyring
+pacman-key --refresh-keys
+fdisk ... 23
+mkfs.ext4
+mount /dev/sda3 /mnt
+mkdir /mnt/boot
+mount /dev/sda1 /mnt/boot
+pacstrap /mnt base linux linux-firmware wpa_supplicant broadcom-wl dhcpcd vim 
+genfstab -U /mnt > /mnt/etc/fstab
+arch-chroot /mnt
+ln -sf /usr/share/zoneinfo/US/Pacific /etc/localtime
+ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+echo "" > /etc/hostname
+locale-gen
+useradd -m user1
+passwd
+passwd user1
+poweroff
+./refind-install
+cp wpa_supplicant.conf /etc/
+cp wpa_supplicant.service /etc/systemd/system/
+cp dhcpcd.conf /etc/
+systemctl enable wpa_supplicant dhcpcd
+
+git clone https://aur.archlinux.org/mbpfan-git.git
+makepkg -sr
+pacman -U
+systemctl enable mbpfan
+
+pacman -S man-db xterm xcalib firefox i3-wm thunar maim tumbler feh gvfs base-devel lsof unrar unzip wget curl xorg xerces-c git git-lfs pcre gcc make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python tk tbb z3
+python -m pip install pigments numpy pyyaml orion optuna uproot matplotlib pandas typing_extensions
+
+git clone https://aur.archlinux.org/libinput-three-finger-drag.git
+makepkg -sr
+pacman -U 
+
+vim /usr/share/texmf-dist/scripts/texlive/tlmgr.pl
+replace $Master = "$Master/../.."; with $Master = "${Master}/../../..";
+cd /usr/share/texmf-dist/scripts/texlive/tlmgr.pl 
+tlmgr.pl --usermode init-usertree
+tlmgr.pl --usermode install floatrow
