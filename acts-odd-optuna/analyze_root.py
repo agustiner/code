@@ -4,7 +4,7 @@ import os
 import pathlib
 from matplotlib import pyplot
 
-study_dir = pathlib.Path('2022-12-21-16-56-03')
+study_dir = pathlib.Path('2022-12-21-19-20-29')
 root_file_list = []
 
 with open(study_dir / 'root_file_list.json') as root_file_list_file:
@@ -33,6 +33,9 @@ for root_file in root_file_list:
 # Sigh. There is certainly such as thing
 # as too much data.
 
+pyplot.title('eff_particles')
+pyplot.xlabel('Number of trials')
+pyplot.ylabel('eff_particles')
 pyplot.plot(eff_particles_list)
 pyplot.show()
 
