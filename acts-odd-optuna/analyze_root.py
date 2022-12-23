@@ -33,9 +33,13 @@ for root_file in root_file_list:
 # Sigh. There is certainly such as thing
 # as too much data.
 
-pyplot.title('eff_particles')
-pyplot.xlabel('Number of trials')
-pyplot.ylabel('eff_particles')
-pyplot.plot(eff_particles_list)
-pyplot.show()
+pyplot.rcParams['font.family'] = 'Times New Roman'
 
+figure = pyplot.figure()
+figure.set_size_inches(4, 4)
+ax = figure.add_subplot()
+ax.set_title('eff_particles')
+ax.set_xlabel('Number of trials')
+ax.set_ylabel('eff_particles')
+ax.plot(eff_particles_list)
+pyplot.savefig('ap.png', bbox_inches = 'tight', dpi = 300)
