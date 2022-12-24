@@ -2,8 +2,41 @@ import uproot
 import json
 import os
 import pathlib
+import matplotlib
 from matplotlib import pyplot
 
+def plot_xyz(xstring, ystring, zstring, titlestring, xarray, yarray, zarray):
+    # Plot an x-y-z graph.
+    pass
+
+def plot_xy(xstring, ystring, titlestring, xarray, yarray):
+    # Plot an x-y graph.
+    pass
+
+def plot_array(xstring, ystring, titlestring, array):
+    # Plot one array.
+    
+    pyplot.rcParams['font.family'] = 'Times New Roman'
+    figure = pyplot.figure()
+    figure.set_size_inches(6, 3)
+    ax = figure.add_subplot()
+    ax.set_ylabel(ystring)
+    ax.set_xlabel(xstring)
+    ax.set_title(titlestring)
+    ax.plot(array)
+
+    for axi in pyplot.gcf().axes:
+        axi.get_lines()[0].set_color('black')
+
+    for axic in ax.get_children():
+        if isinstance(axic, matplotlib.spines.Spine):
+            axic.set_color('black')
+
+    ax.tick_params(axis='x', colors='black')
+    ax.tick_params(axis='y', colors='black')
+        
+    pyplot.savefig(titlestring + '.png', bbox_inches = 'tight', dpi = 200)
+    
 study_dir = pathlib.Path('2022-12-21-19-20-29')
 root_file_list = []
 
@@ -25,21 +58,7 @@ for root_file in root_file_list:
     fakerate_tracks_list.append(root_dict["fakerate_tracks"].member("fElements")[0])
     duplicaterate_tracks_list.append(root_dict["duplicaterate_tracks"].member("fElements")[0])
 
-# Cool. We can plot the output of each trial's
-# CKF performance analyzer. Now run 300
-# trials or so. But I don't have enough disk
-# space for all those .root files. So I need
-# to modify my code to selectively save data.
-# Sigh. There is certainly such as thing
-# as too much data.
 
-pyplot.rcParams['font.family'] = 'Times New Roman'
-
-figure = pyplot.figure()
-figure.set_size_inches(4, 4)
-ax = figure.add_subplot()
-ax.set_title('eff_particles')
-ax.set_xlabel('Number of trials')
-ax.set_ylabel('eff_particles')
-ax.plot(eff_particles_list)
-pyplot.savefig('ap.png', bbox_inches = 'tight', dpi = 300)
+plot_array('Number of trials', 'Particle efficiency', 'Particle efficiency', eff_particles_list)
+plot_array('Number of trials', 'Track fake rate', 'Track fake rate', fakerate_tracks_list)
+plot_array('Number of trials', 'Track duplicate rate', 'Track duplicate rate', duplicaterate_tracks_list)

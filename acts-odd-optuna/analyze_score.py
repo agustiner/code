@@ -1,4 +1,4 @@
-# Review the optimization study's data, make plots, etc.
+# Make a plot of just the Study's score.
 import optuna
 from matplotlib import pyplot
 
@@ -10,17 +10,15 @@ def get_study():
 
     return study
 
-def get_study_points(parameter, study):
-    # parameter string
-    # study Study
-    # trial int
-    points = list()
+def get_study_scores(study):
+    # input: Study
+    # output: list
+    score_list = list()
     
     for t in study.trials:
-        point = t.params[parameter]
-        points.append(point)
+        score_list.append(t.value)
 
-    return points
+    return score_list
 
 def get_study_figure(points, xaxis_string, yaxis_string):
     pyplot.rcParams['font.family'] = 'Times New Roman'
@@ -36,11 +34,10 @@ def get_study_figure(points, xaxis_string, yaxis_string):
 
     return figure
 
-def get_study_plots():
-    parameter_list = ['cotThetaMax', 'deltaRMax', 'deltaRMin', 'impactMax', 'maxPtScattering', 'maxSeedsPerSpM', 'radLengthPerSeed', 'sigmaScattering']
+def get_score_plot():
     study = get_study()
-    for parameter in parameter_list:
-        points = get_study_points(parameter, study)
-        fig = get_study_figure(points, "Trial", parameter)
-        pyplot.savefig(parameter + '.png', bbox_inches='tight', dpi = 200)
+    points = get_study_scores(study)
+    fig = get_study_figure(points, 'Trial', 'Score')
+    pyplot.savefig('score.png', bbox_inches='tight', dpi = 200)
 
+get_score_plot()

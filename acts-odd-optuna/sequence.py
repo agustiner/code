@@ -2,7 +2,7 @@
 # n_max_seeds_per_sp_m number of compatible 
 # cot_theta_max cot of maximum theta angle
 # sigmaScattering How many sigmas of scattering to include in seeds
-# radLengthPerSeed Average Radiation Length
+# radLengthPerSeed Average Radiation Length. average radiation lengths of material on the length of a seed
 # impactMax max impact parameter in mm
 # maxPtScattering maximum Pt for scattering cut in GeV
 # deltaRMin minimum value for deltaR separation in mm
