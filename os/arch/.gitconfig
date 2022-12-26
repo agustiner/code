@@ -1,0 +1,12 @@
+[alias]
+	a = add
+	c = commit
+	d = diff
+	f = fetch
+	l = log
+	p = push
+	r = restore
+	s = status
+[user]
+	email = "89935000+aer7@users.noreply.github.com"
+	name = "Agustin Romero"

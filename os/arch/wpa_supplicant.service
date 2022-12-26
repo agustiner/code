@@ -1,0 +1,11 @@
+[Unit]
+Description=wpa_supplicant
+After=network.target
+IgnoreOnIsolate=true
+
+[Service]
+ExecStart=/usr/bin/wpa_supplicant -d -i wlan0 -c /etc/wpa_supplicant.conf
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
