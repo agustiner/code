@@ -1,0 +1,4 @@
+LIBGL_ALWAYS_SOFTWARE=1 geoDisplay /home/user1/code/dd4hep/source/examples/DDCodex/compact/CODEX-b-alone.xml
+ddsim --dumpSteeringFile > steering.py
+ddsim --compactFile=/home/user1/code/dd4hep/source/examples/DDCodex/compact/CODEX-b-alone.xml --runType=batch -G -N=1 --steeringFile steering.py --outputFile=ddsim.root --gun.position "3372.5*cm 0.0*cm 1265.0*cm" --gun.direction "1.0 0.0 0.0" --gun.energy "30*GeV" --part.userParticleHandler="" --gun.particle "e-"
+LIBGL_ALWAYS_SOFTWARE=1 ddeve -config /home/user1/code/dd4hep/source/examples/DDCodex/compact/CODEX-b-alone.xml
