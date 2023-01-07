@@ -7,6 +7,9 @@
 	p = push
 	r = restore
 	s = status
+	t = rev-parse --show-toplevel
 [user]
-	email = "89935000+aer7@users.noreply.github.com"
+	email = "agustin423@icloud.com"
 	name = "Agustin Romero"
+[core]
+	editor = vim
