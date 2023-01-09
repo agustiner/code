@@ -8,7 +8,7 @@ import objective
 import pathlib
 
 def main():
-    n_trials = 100
+    n_trials = 1
     initial_param_dict = {
         "maxSeedsPerSpM": 1,
         "cotThetaMax": 7.40627,
