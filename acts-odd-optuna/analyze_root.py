@@ -37,7 +37,7 @@ def plot_array(xstring, ystring, titlestring, array):
         
     pyplot.savefig(titlestring + '.png', bbox_inches = 'tight', dpi = 200)
     
-study_dir = pathlib.Path('2022-12-21-19-20-29')
+study_dir = pathlib.Path('2023-01-10-14-09-59')
 root_file_list = []
 
 with open(study_dir / 'root_file_list.json') as root_file_list_file:
@@ -53,7 +53,6 @@ duplicaterate_tracks_list = []
 for root_file in root_file_list:
     root_path = pathlib.Path(root_file)
     root_dict = uproot.open(root_path)
-    print(root_dict)
     eff_particles_list.append(root_dict["eff_particles"].member("fElements")[0])
     fakerate_tracks_list.append(root_dict["fakerate_tracks"].member("fElements")[0])
     duplicaterate_tracks_list.append(root_dict["duplicaterate_tracks"].member("fElements")[0])

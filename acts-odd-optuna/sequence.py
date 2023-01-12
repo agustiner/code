@@ -85,13 +85,12 @@ def run(output_path,
     oddMaterialDeco = acts.IMaterialDecorator.fromFile(oddMaterialMap)
     
     detector, trackingGeometry, decorators = getOpenDataDetector(
-        oddPath, mdecorator=oddMaterialDeco
+        oddPath, mdecorator = oddMaterialDeco
     )
     field = acts.ConstantBField(acts.Vector3(0.0, 0.0, 2.0 * u.T))
     rnd = acts.examples.RandomNumbers(seed=42)
     
     s = acts.examples.Sequencer(events = 1,
-                                numThreads = -1,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -99,8 +98,8 @@ def run(output_path,
         hardProcess = ["Top:qqbar2ttbar=on"],
         npileup = 10,
         vtxGen=acts.examples.GaussianVertexGenerator(
-            stddev=acts.Vector4(0.0125 * u.mm, 0.0125 * u.mm, 55.5 * u.mm, 5.0 * u.ns),
-            mean=acts.Vector4(0, 0, 0, 0),
+            stddev = acts.Vector4(0.0125 * u.mm, 0.0125 * u.mm, 55.5 * u.mm, 5.0 * u.ns),
+            mean = acts.Vector4(0, 0, 0, 0),
         ),
         rnd = rnd,
         outputDirRoot = output_path
@@ -110,6 +109,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
+        ParticleSelectorConfig(eta = (-3.0, 3.0), pt = (150 * u.MeV, None), removeNeutral = True),
         outputDirRoot = output_path,
         rnd = rnd,
     )
@@ -127,7 +127,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(pt=(500.0 * u.MeV, None), nHits=(9, None)),
+        TruthSeedRanges(pt=(1.0 * u.GeV, None), eta = (-3.0, 3.0), nHits = (9, None)),
         ParticleSmearingSigmas(pRel=0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),

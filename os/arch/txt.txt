@@ -22,15 +22,16 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-echo "" > /etc/hostname
+echo "archlinux" > /etc/hostname
 locale-gen
 useradd -m user1
 passwd user1
 passwd
 grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch
 grub-mkconfig -o /boot/grub/grub.cfg
-cp wpa_supplicant.conf /etc/
 cp wpa_supplicant.service /etc/systemd/system/
+cp dhcpcd.service /etc/systemd/system/
+cp wpa_supplicant.conf /etc/
 cp dhcpcd.conf /etc/
 poweroff
 systemctl enable wpa_supplicant dhcpcd
@@ -40,7 +41,7 @@ makepkg -sr
 pacman -U
 systemctl enable mbpfan
 systemctl start mbpfan
-pacman -S xorg xterm xcalib firefox i3-wm thunar maim gvfs base-devel man-db lsof unrar unzip wget curl xerces-c git git-lfs pcre gcc make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python tk tbb z3 ghostscript
+pacman -S xorg xterm xcalib firefox i3-wm maim thunar gvfs pulseaudio pulseaudio-alsa alsa-utils base-devel man-db lsof unrar unzip wget curl xerces-c git git-lfs pcre gcc make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python tk tbb z3 ghostscript
 python -m pip install pygments numpy pyyaml orion optuna uproot matplotlib pandas typing_extensions
 git clone https://aur.archlinux.org/libinput-three-finger-drag.git
 makepkg -sr
@@ -48,5 +49,5 @@ pacman -U
 wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar -xf install-tl-unx.tar.gz
 perl tl-install
-tlmgr install koma-script etaremune floatrow geometry xkeyval biblatex times courier cbfonts standalone babel 
+tlmgr install koma-script etaremune floatrow geometry xkeyval biblatex times courier cbfonts standalone babel caption
 
