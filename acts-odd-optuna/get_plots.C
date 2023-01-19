@@ -22,8 +22,3 @@ void get_performance_plots(TString root_filename) {
     plotefficiency(tefficiency, *it);
   }
 }
-
-int get_plots() {
-  get_performance_plots("./2023-01-17-16-59-04/trial_0/performance_ckf.root");
-  return 0;
-}

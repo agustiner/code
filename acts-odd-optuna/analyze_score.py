@@ -2,9 +2,8 @@
 import optuna
 from matplotlib import pyplot
 
-def get_study(dir_string):
+def get_study(study_path):
     study_name = 'study'
-    study_path = '/home/user1/code/acts-odd-optuna/{}/{}.db'.format(dir_string, study_name)
     storage_string = 'sqlite:///{}'.format(study_path)
     study = optuna.load_study(study_name = study_name, storage = storage_string)
 
@@ -34,8 +33,8 @@ def get_study_figure(points, xaxis_string, yaxis_string):
 
     return figure
 
-def get_score_plot(dir_string):
-    study = get_study(dir_string)
+def get_score_plot(study_path):
+    study = get_study(study_path)
     points = get_study_scores(study)
     fig = get_study_figure(points, 'Trial', 'Score')
     pyplot.savefig('score.png', bbox_inches='tight', dpi = 200)

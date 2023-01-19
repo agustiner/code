@@ -1,17 +1,10 @@
+# Make a plot of eff_particles, fakerate_tracks, duplicaterate_tracks of each trial as a function of trials.
 import uproot
 import json
 import os
 import pathlib
 import matplotlib
 from matplotlib import pyplot
-
-def plot_xyz(xstring, ystring, zstring, titlestring, xarray, yarray, zarray):
-    # Plot an x-y-z graph.
-    pass
-
-def plot_xy(xstring, ystring, titlestring, xarray, yarray):
-    # Plot an x-y graph.
-    pass
 
 def plot_array(xstring, ystring, titlestring, array):
     # Plot one array.
@@ -37,7 +30,7 @@ def plot_array(xstring, ystring, titlestring, array):
         
     pyplot.savefig(titlestring + '.png', bbox_inches = 'tight', dpi = 200)
 
-def analyze_root(dir_string):
+def get_trial_plots(dir_string):
     study_dir = pathlib.Path(dir_string)
     root_file_list = []
     
