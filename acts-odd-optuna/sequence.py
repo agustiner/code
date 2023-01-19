@@ -45,16 +45,10 @@ from acts.examples.simulation import (
     ParticleConfig,
     addFatras,
     addDigitization,
-)    
-from acts.examples.odd import getOpenDataDetector
+)
+from acts.examples import GenericDetector
 import datetime
 import os
-
-def getActsSourcePath():
-    return pathlib.Path("/home/user1/code/acts/source")
-
-def getOpenDataDetectorPath():
-    return getActsSourcePath() / "thirdparty" / "OpenDataDetector"
 
 def run(output_path,
         maxSeedsPerSpM,
@@ -69,48 +63,36 @@ def run(output_path,
     # with reconstructed tracks. This sequence may be put into an
     # optimizer trial function.
     
-    # Input
-    #
-    # Output
-    # 
     logger = acts.logging.getLogger("full_chain_odd")
     logger.info("Starting Sequence")
     truthSmearedSeeded = False
     truthEstimatedSeeded = False
     u = acts.UnitConstants
-    oddPath = getOpenDataDetectorPath()
-    oddMaterialMap = oddPath / "data/odd-material-maps.root"
-    oddDigiConfig = oddPath / "config/odd-digi-smearing-config.json"
-    oddSeedingSel = oddPath / "config/odd-seeding-config.json"
-    oddMaterialDeco = acts.IMaterialDecorator.fromFile(oddMaterialMap)
     
-    detector, trackingGeometry, decorators = getOpenDataDetector(
-        oddPath, mdecorator = oddMaterialDeco
-    )
+    detector, trackingGeometry, decorators = GenericDetector.create()
     field = acts.ConstantBField(acts.Vector3(0.0, 0.0, 2.0 * u.T))
     rnd = acts.examples.RandomNumbers(seed=42)
+
+    acts_source_path = pathlib.Path('/home/user1/code/acts/source')
+    digitization_file = acts_source_path / "Examples/Algorithms/Digitization/share/default-smearing-config-generic.json"
+    geometry_selection_file = acts_source_path / "Examples/Algorithms/TrackFinding/share/geoSelection-genericDetector.json"
     
     s = acts.examples.Sequencer(events = 1,
                                 outputDir = str(output_path))
-    
-    acts.examples.simulation.addPythia8(
+
+    acts.examples.simulation.addParticleGun(
         s,
-        cmsEnergy = 14 * acts.UnitConstants.TeV,
-        hardProcess = ["Top:qqbar2ttbar=on"],
-        npileup = 10,
-        vtxGen = acts.examples.GaussianVertexGenerator(
-            stddev = acts.Vector4(0.0125 * u.mm, 0.0125 * u.mm, 55.5 * u.mm, 5.0 * u.ns),
-            mean = acts.Vector4(0, 0, 0, 0),
-        ),
+        EtaConfig(-2.0, 2.0),
+        ParticleConfig(4, acts.PdgParticle.eMuon, True),
+        PhiConfig(0.0, 360.0 * u.degree),
+        multiplicity = 2,
         rnd = rnd,
-        outputDirRoot = output_path
     )
     
     acts.examples.simulation.addFatras(
         s,
         trackingGeometry,
         field,
-        ParticleSelectorConfig(pt = (150 * u.MeV, None), removeNeutral = True),
         outputDirRoot = output_path,
         rnd = rnd,
     )
@@ -119,7 +101,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        digiConfigFile = oddDigiConfig,
+        digiConfigFile = digitization_file,
         outputDirRoot = output_path,
         rnd = rnd,
     )
@@ -128,7 +110,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(pt=(1.0 * u.GeV, None), nHits = (9, None)),
+        TruthSeedRanges(pt=(500 * u.MeV, None), nHits = (9, None)),
         ParticleSmearingSigmas(pRel=0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
@@ -150,7 +132,7 @@ def run(output_path,
         else SeedingAlgorithm.TruthEstimated
         if truthEstimatedSeeded
         else SeedingAlgorithm.Default,
-        geoSelectionConfigFile = oddSeedingSel,
+        geoSelectionConfigFile = geometry_selection_file,
         outputDirRoot = output_path,
         rnd = rnd,
     )
@@ -159,8 +141,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        CKFPerformanceConfig(ptMin = 1.0 * u.GeV,
-                             nMeasurementsMin = 6),
+        CKFPerformanceConfig(ptMin = 400 * u.MeV, nMeasurementsMin = 6),
         outputDirRoot = output_path
     )
     

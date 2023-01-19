@@ -33,7 +33,7 @@ def get_study_figure(points, xaxis_string, yaxis_string):
 
     return figure
 
-def get_score_plot(study_path):
+def get_score_png(study_path):
     study = get_study(study_path)
     points = get_study_scores(study)
     fig = get_study_figure(points, 'Trial', 'Score')

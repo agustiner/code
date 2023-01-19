@@ -1,18 +1,16 @@
 import datetime
-import json
 import logging
 import optuna
-import os
 import sys
 import objective
 import pathlib
 
 def optimize():
-    n_trials = 100
+    n_trials = 1
     initial_param_dict = {
         "maxSeedsPerSpM": 1,
         "cotThetaMax": 7.40627,
-        "sigmaScattering": 50,
+        "sigmaScattering": 5,
         "radLengthPerSeed": 0.1,
         "impactMax": 3.0,
         "maxPtScattering": 10.0,
@@ -37,9 +35,7 @@ def optimize():
         direction = score_direction,
         load_if_exists = True,
     )
-    
     study.enqueue_trial(initial_param_dict)
-
     logger.info('Calling optimize.')
     study.optimize(objective_instance, n_trials = n_trials)
     logger.info('optimize finished.')

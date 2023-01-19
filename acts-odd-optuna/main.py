@@ -16,23 +16,20 @@ def main():
         optimize.optimize()
 
     if args.command == 'get_best_trial':
-        # args.paramA: String of the relative path to the simulation directory, e.g. 2023-01-13-00-07-47
+        # args.paramA: filestring of the .db file
         analyze_get_best_trial.get_best_trial(args.paramA)
 
-    if args.command == 'get_trial_plots':
+    if args.command == 'get_parameter_pngs':
         # args.paramA: String of the relative path to the simulation directory, e.g. 2023-01-13-00-07-47
-        analyze_trials.get_trial_plots(args.paramA)
+        analyze_trials.get_parameter_pngs(args.paramA)
 
-    if args.command == 'get_score_plot':
+    if args.command == 'get_score_png':
         # args.paramA: String of the relative path to the simulation directory, e.g. 2023-01-13-00-07-47
-        analyze_score.get_score_plot(args.paramA)
+        analyze_score.get_score_png(args.paramA)
 
-    if args.command == 'get_performance_plots':
-        analyze_root.get_performance_plots(args.paramA)
-
-    if args.command == 'get_performance_ckf':
+    if args.command == 'get_efficiency_pngs':
         # paramA: path to .root file
-        analyze_performance_ckf.get_plots(args.paramA)
+        analyze_performance_ckf.get_efficiency_pngs(args.paramA)
 
 if __name__ == "__main__":
     main()

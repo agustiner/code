@@ -13,13 +13,7 @@ class Objective:
         output_path.mkdir()
 
     def __call__(self, trial):
-        # Run the Sequence, return its score. This needs logging.
-        
-        # Input
-        # trial
-        # Output
-        # score
-        
+        # Run the trial, return its score. This needs logging.        
         maxSeedsPerSpM = trial.suggest_int("maxSeedsPerSpM", 0, 10)
         cotThetaMax = trial.suggest_float("cotThetaMax", 5.0, 10.0)
         sigmaScattering = trial.suggest_float("sigmaScattering", 0.2, 50)
@@ -62,7 +56,6 @@ class Objective:
                 root_file_list.append(str(root_path))
                 json.dump(root_file_list, root_file_list_file)
                 root_file_list_file.truncate()
-                
         # should probably move this somewhere else
         
         root_dict = uproot.open(root_path)

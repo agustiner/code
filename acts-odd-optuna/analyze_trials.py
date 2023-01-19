@@ -30,7 +30,7 @@ def plot_array(xstring, ystring, titlestring, array):
         
     pyplot.savefig(titlestring + '.png', bbox_inches = 'tight', dpi = 200)
 
-def get_trial_plots(dir_string):
+def get_parameter_pngs(dir_string):
     study_dir = pathlib.Path(dir_string)
     root_file_list = []
     
