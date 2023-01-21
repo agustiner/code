@@ -1,0 +1,7 @@
+git-lfs install
+git-lfs pull
+
+dont do this, let acts compile it
+cmake -S source -B build  -DDD4hep_DIR=/home/user1/code/dd4hep/install -DGeant4_DIR=/home/user1/code/geant/install -DROOT_DIR=/home/user1/code/root/install/ -DCMAKE_CXX_STANDARD=17 -DCMAKE_INSTALL_PREFIX=/home/user1/code/odd/install
+cmake --build build
+cmake --build build --target install
