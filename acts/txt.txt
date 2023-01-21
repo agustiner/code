@@ -1,0 +1,33 @@
+git clone https://github.com/acts-project/acts
+rmdir source/thirdparty/OpenDataDetector
+ln -s /home/user1/code/odd/source /home/user1/code/acts/source/thirdparty/OpenDataDetector
+cmake -DCMAKE_INSTALL_PREFIX=/home/user1/code/acts/install -DACTS_BUILD_EXAMPLES_DD4HEP=ON -DACTS_BUILD_EXAMPLES_GEANT4=ON -DPythia8_INCLUDE_DIR=/home/user1/code/pythia/build/include -DPythia8_LIBRARY=/home/user1/code/pythia/build/lib/libpythia8.so -DACTS_BUILD_EXAMPLES_PYTHIA8=ON -DACTS_BUILD_EXAMPLES_PYTHON_BINDINGS=ON -DACTS_BUILD_FATRAS=ON -DACTS_BUILD_FATRAS_GEANT4=ON -DACTS_BUILD_ODD=ON -DACTS_BUILD_PLUGIN_DD4HEP=ON -DHepMC3_DIR=/home/user1/code/hepmc/install/share/HepMC3/cmake -DACTS_BUILD_EXAMPLES_HEPMC3=ON -B build -S source
+cmake --build build
+cmake --build build --target help
+
+./build/bin/ActsExamplePythia8 --events=10 --output-dir=data/gen/ttbar_mu140 --output-csv --rnd-seed=42 --gen-cms-energy-gev=14000  --gen-hard-process=Top:qqbar2ttbar=on --gen-npileup=140
+
+./build/bin/ActsExampleAdaptiveMultiVertexFinder --help
+
+./build/bin/ActsExampleAdaptiveMultiVertexFinder --events=10 --rnd-seed=42 --gen-cms-energy-gev=14000 --gen-hard-process=Top:qqbar2ttbar=on --gen-npileup=140 -l 0
+
+./build/bin/ActsExampleParticleGun --events=100 --output-dir=data/gen/four_muons --output-csv --gen-phi-degree=0:90 --gen-eta=-2:2 --gen-mom-gev=1:5 --gen-pdg=13 --gen-randomize-charge --gen-nparticles=4
+
+./build/bin/ActsExamplePythia8 --events=100 --output-dir=data/gen/ttbar_mu140 --output-csv --rnd-seed=42 --gen-cms-energy-gev=14000 --gen-hard-process=Top:qqbar2ttbar=on --gen-npileup=140
+
+./build/bin/ActsExampleFatrasGeneric --output-dir=data/sim_generic/single_muon --output-csv --events=100
+
+./bin/ActsTutorialVertexFinder -n 3
+
+MVF example
+?
+
+CKF example
+1. ./build/bin/ActsExamplePythia8 --events=100 --output-dir=data/gen/ttbar_mu140 --output-csv --rnd-seed=42 --gen-cms-energy-gev=14000 --gen-hard-process=Top:qqbar2ttbar=on --gen-npileup=140
+
+2. ./build/bin/ActsExampleFatrasGeneric --input-dir=data/gen/ttbar_mu140 --output-dir=data/sim_generic/ttbar_mu140 --output-csv --select-eta=-3:3 --select-pt=0.5 --remove-neutral --bf-constant-tesla=0:0:1
+
+3. ./build/bin/ActsExampleCKFTracksGeneric --input-dir=data/sim_generic/ttbar_mu140/ --bf-constant-tesla=0:0:1 --ckf-selection-chi2max 15 --ckf-selection-nmax 10 --output-dir=data/reco_trackML/ttbar_mu140 --digi-config-file source/Examples/Algorithms/Digitization/share/default-smearing-config-generic.json --geo-selection-config-file source/Examples/Algorithms/TrackFinding/share/geoSelection-genericDetector.json
+
+
+/ActsExampleTestSeedAlgorithm --input-dir sim-pythia8 --output-dir atlasSeedPerf
