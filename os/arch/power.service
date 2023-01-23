@@ -1,0 +1,11 @@
+[Unit]
+Description=power
+
+[Service]
+Type=oneshot
+Environment="TERM=dumb"
+RemainAfterExit=true
+ExecStart=/bin/bash -c "/usr/bin/echo off > /sys/devices/system/cpu/smt/control; /usr/bin/cpupower frequency-set --governor powersave; /usr/bin/cpupower frequency-set --min 1.2GHz; /usr/bin/cpupower frequency-set --max 1.2GHz; /usr/bin/x86_energy_perf_policy --turbo-enable 0; /usr/sbin/powertop --auto-tune"
+
+[Install]
+WantedBy=multi-user.target
