@@ -1,17 +1,3 @@
-# in
-# n_max_seeds_per_sp_m number of compatible 
-# cot_theta_max cot of maximum theta angle
-# sigmaScattering How many sigmas of scattering to include in seeds
-# radLengthPerSeed Average Radiation Length. average radiation lengths of material on the length of a seed
-# impactMax max impact parameter in mm
-# maxPtScattering maximum Pt for scattering cut in GeV
-# deltaRMin minimum value for deltaR separation in mm
-# deltaRMax maximum value for deltaR separation in mm
-# out
-# .root file
-# .root file
-# .root file
-
 import pathlib
 import acts
 import acts.examples
@@ -41,6 +27,20 @@ def getActsSourcePath():
 def getOpenDataDetectorPath():
     return getActsSourcePath() / "thirdparty" / "OpenDataDetector"
 
+# Run the Sequence, starting from instantiating events and ending
+# with reconstructed tracks. This sequence may be put into an
+# optimizer trial function.
+# Input:
+# n_max_seeds_per_sp_m number of compatible 
+# cot_theta_max cot of maximum theta angle
+# sigmaScattering How many sigmas of scattering to include in seeds
+# radLengthPerSeed Average Radiation Length. average radiation lengths of material on the length of a seed
+# impactMax max impact parameter in mm
+# maxPtScattering maximum Pt for scattering cut in GeV
+# deltaRMin minimum value for deltaR separation in mm
+# deltaRMax maximum value for deltaR separation in mm
+# Output:
+# .root file: One file named 'performance_ckf.py'.
 def run(output_path,
         maxSeedsPerSpM,
         cotThetaMax,
@@ -49,19 +49,9 @@ def run(output_path,
         impactMax,
         maxPtScattering,
         deltaRMin,
-        deltaRMax):
-    # Run the Sequence, starting from instantiating events and ending
-    # with reconstructed tracks. This sequence may be put into an
-    # optimizer trial function.
-    
-    # Input
-    #
-    # Output
-    # 
+        deltaRMax):    
     logger = acts.logging.getLogger("full_chain_odd")
     logger.info("Starting Sequence")
-    truthSmearedSeeded = False
-    truthEstimatedSeeded = False
     u = acts.UnitConstants
     oddPath = getOpenDataDetectorPath()
     oddMaterialMap = oddPath / "data/odd-material-maps.root"
@@ -77,7 +67,7 @@ def run(output_path,
 
     # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
     # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 100,
+    s = acts.examples.Sequencer(events = 1,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -96,7 +86,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        ParticleSelectorConfig(pt = (150 * u.MeV, None), removeNeutral = True),
+        ParticleSelectorConfig(eta = (1.5, 3), pt = (150 * u.MeV, None), removeNeutral = True),
         rnd = rnd,
     )
     
@@ -112,7 +102,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(pt=(1.0 * u.GeV, None), nHits = (9, None)),
+        TruthSeedRanges(eta = (1.5, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),
         ParticleSmearingSigmas(pRel = 0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
@@ -140,6 +130,8 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
+        # ptMin: The minimum pT of a track required in order to consider the track for efficiency measurements.
+        # nMeasurementsMin: The minimum number of hits in a track required in order to consider the track for efficiency measurements.
         CKFPerformanceConfig(ptMin = 1.0 * u.GeV,
                              nMeasurementsMin = 6),
         writeTrajectories = False,
