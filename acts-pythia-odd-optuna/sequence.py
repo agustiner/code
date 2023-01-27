@@ -67,7 +67,7 @@ def run(output_path,
 
     # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
     # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 1,
+    s = acts.examples.Sequencer(events = 100,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -106,17 +106,17 @@ def run(output_path,
         ParticleSmearingSigmas(pRel = 0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
-            deltaR=(deltaRMin * u.mm, deltaRMax * u.mm),
+            deltaR=(20.151687306488515 * u.mm, 50.117572952670805 * u.mm),
             collisionRegion = (-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
-            maxSeedsPerSpM = maxSeedsPerSpM,
-            cotThetaMax = cotThetaMax,
-            sigmaScattering = sigmaScattering,
-            radLengthPerSeed = radLengthPerSeed,
-            maxPtScattering = maxPtScattering * u.GeV,
+            maxSeedsPerSpM = 0,
+            cotThetaMax = 9.934472088238888,
+            sigmaScattering = 29.834032576005562,
+            radLengthPerSeed = 0.0915812459160546,
+            maxPtScattering = 26.82838548941585 * u.GeV,
             minPt= 500 * u.MeV,
             bFieldInZ = 1.99724 * u.T,
-            impactMax = impactMax * u.mm,
+            impactMax = 19.24211663824496 * u.mm,
         ),
         TrackParamsEstimationConfig(deltaR=(10.0 * u.mm, None)),
         seedingAlgorithm = SeedingAlgorithm.Default,
@@ -126,12 +126,12 @@ def run(output_path,
 
     # writeTrajectories = False, because those files aren't used for anything, and they
     # are very large.
+    # ptMin: The minimum pT of a track required in order to consider the track for efficiency measurements.
+    # nMeasurementsMin: The minimum number of hits in a track required in order to consider the track for efficiency measurements.
     acts.examples.reconstruction.addCKFTracks(
         s,
         trackingGeometry,
         field,
-        # ptMin: The minimum pT of a track required in order to consider the track for efficiency measurements.
-        # nMeasurementsMin: The minimum number of hits in a track required in order to consider the track for efficiency measurements.
         CKFPerformanceConfig(ptMin = 1.0 * u.GeV,
                              nMeasurementsMin = 6),
         writeTrajectories = False,
