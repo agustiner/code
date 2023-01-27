@@ -86,7 +86,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        ParticleSelectorConfig(eta = (1.5, 3), pt = (150 * u.MeV, None), removeNeutral = True),
+        ParticleSelectorConfig(eta = (-1.5, 1.5), pt = (150 * u.MeV, None), removeNeutral = True),
         rnd = rnd,
     )
     
@@ -102,7 +102,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(eta = (1.5, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),
+        TruthSeedRanges(eta = (-1.5, 1.5), pt = (1.0 * u.GeV, None), nHits = (9, None)),
         ParticleSmearingSigmas(pRel = 0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
