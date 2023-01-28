@@ -9,7 +9,6 @@ timedatectl set-ntp true
 hwclock --systohc
 pacman -Sy
 pacman -S archlinux-keyring
-pacman-key --refresh-keys
 fdisk 20
 mkfs.ext4
 mount /dev/sda2 /mnt
@@ -18,6 +17,8 @@ mount /dev/sda1 /mnt/boot
 pacstrap /mnt base linux linux-firmware wpa_supplicant broadcom-wl dhcpcd vim grub efibootmgr
 genfstab -U /mnt > /mnt/etc/fstab
 arch-chroot /mnt
+grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch
+grub-mkconfig -o /boot/grub/grub.cfg
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
@@ -27,8 +28,6 @@ locale-gen
 useradd -m user1
 passwd user1
 passwd
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch
-grub-mkconfig -o /boot/grub/grub.cfg
 cp wpa_supplicant.service /etc/systemd/system/
 cp dhcpcd.service /etc/systemd/system/
 cp wpa_supplicant.conf /etc/
@@ -36,8 +35,7 @@ cp dhcpcd.conf /etc/
 poweroff
 systemctl enable wpa_supplicant dhcpcd
 systemctl start wpa_supplicant dhcpcd
-pacman -S xorg xterm xcalib firefox i3-wm maim thunar gvfs pulseaudio pulseaudio-alsa alsa-utils base-devel man-db lsof unrar unzip wget curl xerces-c git git-lfs pcre gcc gcc-fortran make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python tk tbb z3 ghostscript
-python -m pip install pygments numpy pyyaml orion optuna uproot matplotlib pandas typing_extensions
+pacman -S xorg xterm xcalib firefox i3-wm maim thunar gvfs pulseaudio pulseaudio-alsa alsa-utils base-devel man-db xerces-c git git-lfs pcre gcc gcc-fortran make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python tk tbb z3 ghostscript xxhash
 git clone https://aur.archlinux.org/mbpfan-git.git
 makepkg -cirs
 systemctl enable mbpfan
@@ -48,4 +46,5 @@ wget https://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
 tar -xf install-tl-unx.tar.gz
 perl tl-install
 tlmgr install koma-script etaremune floatrow geometry xkeyval biblatex times courier cbfonts standalone babel caption
+python -m pip install pygments numpy pyyaml orion optuna uproot matplotlib pandas typing_extensions
 

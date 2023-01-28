@@ -1,7 +1,7 @@
 [Unit]
-Description=wpa_supplicant
-After=network.target
-IgnoreOnIsolate=true
+# Use systemctl list-units to set BindsTo and After
+Wants=sys-subsystem-net-devices-wlan0.device
+After=sys-subsystem-net-devices-wlan0.device
 
 [Service]
 ExecStart=/usr/bin/wpa_supplicant -d -i wlan0 -c /etc/wpa_supplicant.conf
