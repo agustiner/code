@@ -1,0 +1,26 @@
+if test -f FILE; then
+else
+fi
+
+test -f FILE
+[ -f FILE ]
+[[ -f FILE ]]
+
+-G FILE True if the FILE exists and has the same group as the user running the command.
+-L FILE True if the FILE exists and is a symbolic link.
+-O FILE True if the FILE exists and is owned by the user running the command.
+-S FILE True if the FILE exists and is a socket.
+-b FILE True if the FILE exists and is a special block file.
+-c FILE True if the FILE exists and is a special character file.
+-d FILE True if the FILE exists and is a directory.
+-e FILE True if the FILE exists and is a file, regardless of type (node, directory, socket, etc.).
+-f FILE True if the FILE exists and is a regular file (not a directory or device).
+-g FILE True if the FILE exists and has set-group-id (sgid) flag set.
+-h FILE True if the FILE exists and is a symbolic link.
+-k FILE True if the FILE exists and has a sticky bit flag set.
+-p FILE True if the FILE exists and is a pipe.
+-r FILE True if the FILE exists and is readable.
+-s FILE True if the FILE exists and has nonzero size.
+-u FILE True if the FILE exists and set-user-id (suid) flag is set.
+-w FILE True if the FILE exists and is writable.
+-x FILE True if the FILE exists and is executable.
