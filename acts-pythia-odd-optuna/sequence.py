@@ -1,3 +1,17 @@
+# in
+# n_max_seeds_per_sp_m number of compatible 
+# cot_theta_max cot of maximum theta angle
+# sigmaScattering How many sigmas of scattering to include in seeds
+# radLengthPerSeed Average Radiation Length. average radiation lengths of material on the length of a seed
+# impactMax max impact parameter in mm
+# maxPtScattering maximum Pt for scattering cut in GeV
+# deltaRMin minimum value for deltaR separation in mm
+# deltaRMax maximum value for deltaR separation in mm
+# out
+# .root file
+# .root file
+# .root file
+
 import pathlib
 import acts
 import acts.examples
@@ -27,20 +41,6 @@ def getActsSourcePath():
 def getOpenDataDetectorPath():
     return getActsSourcePath() / "thirdparty" / "OpenDataDetector"
 
-# Run the Sequence, starting from instantiating events and ending
-# with reconstructed tracks. This sequence may be put into an
-# optimizer trial function.
-# Input:
-# n_max_seeds_per_sp_m number of compatible 
-# cot_theta_max cot of maximum theta angle
-# sigmaScattering How many sigmas of scattering to include in seeds
-# radLengthPerSeed Average Radiation Length. average radiation lengths of material on the length of a seed
-# impactMax max impact parameter in mm
-# maxPtScattering maximum Pt for scattering cut in GeV
-# deltaRMin minimum value for deltaR separation in mm
-# deltaRMax maximum value for deltaR separation in mm
-# Output:
-# .root file: One file named 'performance_ckf.py'.
 def run(output_path,
         maxSeedsPerSpM,
         cotThetaMax,
@@ -49,9 +49,19 @@ def run(output_path,
         impactMax,
         maxPtScattering,
         deltaRMin,
-        deltaRMax):    
+        deltaRMax):
+    # Run the Sequence, starting from instantiating events and ending
+    # with reconstructed tracks. This sequence may be put into an
+    # optimizer trial function.
+    
+    # Input
+    #
+    # Output
+    # 
     logger = acts.logging.getLogger("full_chain_odd")
     logger.info("Starting Sequence")
+    truthSmearedSeeded = False
+    truthEstimatedSeeded = False
     u = acts.UnitConstants
     oddPath = getOpenDataDetectorPath()
     oddMaterialMap = oddPath / "data/odd-material-maps.root"
@@ -86,7 +96,6 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        ParticleSelectorConfig(eta = (1.5, 3), pt = (150 * u.MeV, None), removeNeutral = True),
         rnd = rnd,
     )
     
@@ -102,21 +111,20 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(eta = (1.5, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),
         ParticleSmearingSigmas(pRel = 0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
-            deltaR=(20.151687306488515 * u.mm, 50.117572952670805 * u.mm),
+            deltaR=(deltaRMin * u.mm, deltaRMax * u.mm),
             collisionRegion = (-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
-            maxSeedsPerSpM = 0,
-            cotThetaMax = 9.934472088238888,
-            sigmaScattering = 29.834032576005562,
-            radLengthPerSeed = 0.0915812459160546,
-            maxPtScattering = 26.82838548941585 * u.GeV,
+            maxSeedsPerSpM = maxSeedsPerSpM,
+            cotThetaMax = cotThetaMax,
+            sigmaScattering = sigmaScattering,
+            radLengthPerSeed = radLengthPerSeed,
+            maxPtScattering = maxPtScattering * u.GeV,
             minPt= 500 * u.MeV,
             bFieldInZ = 1.99724 * u.T,
-            impactMax = 19.24211663824496 * u.mm,
+            impactMax = impactMax * u.mm,
         ),
         TrackParamsEstimationConfig(deltaR=(10.0 * u.mm, None)),
         seedingAlgorithm = SeedingAlgorithm.Default,
@@ -126,8 +134,6 @@ def run(output_path,
 
     # writeTrajectories = False, because those files aren't used for anything, and they
     # are very large.
-    # ptMin: The minimum pT of a track required in order to consider the track for efficiency measurements.
-    # nMeasurementsMin: The minimum number of hits in a track required in order to consider the track for efficiency measurements.
     acts.examples.reconstruction.addCKFTracks(
         s,
         trackingGeometry,
