@@ -1,4 +1,4 @@
-# in
+
 # n_max_seeds_per_sp_m number of compatible 
 # cot_theta_max cot of maximum theta angle
 # sigmaScattering How many sigmas of scattering to include in seeds
@@ -96,6 +96,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
+        ParticleSelectorConfig(eta = (-3, 3), pt = (150 * u.MeV, None), removeNeutral = True),
         rnd = rnd,
     )
     
@@ -111,6 +112,7 @@ def run(output_path,
         s,
         trackingGeometry,
         field,
+        TruthSeedRanges(eta = (-3, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),        
         ParticleSmearingSigmas(pRel = 0.01),
         SeedfinderConfigArg(
             r=(None, 200 * u.mm),
