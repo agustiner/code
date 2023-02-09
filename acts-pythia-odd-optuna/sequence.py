@@ -19,7 +19,8 @@ import acts.examples.simulation
 from acts.examples.reconstruction import (
     CKFPerformanceConfig,
     ParticleSmearingSigmas,
-    SeedfinderConfigArg,
+    SeedFinderConfigArg,
+    SeedFinderOptionsArg,
     SeedingAlgorithm,
     TrackParamsEstimationConfig,
     TrackSelectorRanges,
@@ -114,7 +115,7 @@ def run(output_path,
         field,
         TruthSeedRanges(eta = (-3, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),        
         ParticleSmearingSigmas(pRel = 0.01),
-        SeedfinderConfigArg(
+        SeedFinderConfigArg(
             r=(None, 200 * u.mm),
             deltaR=(deltaRMin * u.mm, deltaRMax * u.mm),
             collisionRegion = (-250 * u.mm, 250 * u.mm),
@@ -125,8 +126,12 @@ def run(output_path,
             radLengthPerSeed = radLengthPerSeed,
             maxPtScattering = maxPtScattering * u.GeV,
             minPt= 500 * u.MeV,
-            bFieldInZ = 1.99724 * u.T,
             impactMax = impactMax * u.mm,
+        ),
+        # Slightly annoying, there are two input types for seeding,
+        # SeedFinderOptionsArg and SeedFinderConfigArg
+        SeedFinderOptionsArg(
+             bFieldInZ = 1.99724 * u.T,
         ),
         TrackParamsEstimationConfig(deltaR=(10.0 * u.mm, None)),
         seedingAlgorithm = SeedingAlgorithm.Default,
