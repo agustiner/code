@@ -15,47 +15,106 @@ def get_efficiency_pngs_separate(root_filename):
         tefficiency = tfile.Get(key)
         get_efficiency_png(tefficiency, key)
 
-def get_efficiency_pngs_combined(root_filenames, labels):
-    tfiles = []
+# Given root_files, labels, and a current canvas, add text to the
+# bottom stating the files and labels
+def set_debug_text(root_files, labels, tcanvas):
+    canvas_offset = 100
+    canvas_offset_margin = 0.06
+    text_offset = 0.04
+    
+    tcanvas.SetCanvasSize(2000, 500 + canvas_offset * len(root_files))
+    ROOT.gPad.SetBottomMargin(canvas_offset_margin * len(root_files))
+    for i, root_file in enumerate(root_files):
+        ttext = ROOT.TText()
+        ttext.SetTextSize(0.03)
+        path = pathlib.Path(root_file)
+        important_parts_of_path = str('/'.join(path.parts[-3:]))
+        ttext.DrawTextNDC(0, 0.01 + i * text_offset, labels[i] + ' ' + important_parts_of_path)
+        ttext.Draw()
 
-    for f in root_filenames:
+def get_efficiency_keys():
+    return ["trackeff_vs_pT", "trackeff_vs_phi", "trackeff_vs_eta", "fakerate_vs_pT", "fakerate_vs_eta", "fakerate_vs_phi", "duplicationRate_vs_pT", "duplicationRate_vs_eta", "duplicationRate_vs_phi"]
+
+# Get the legend for these histograms with these labels. For some
+# reason, the legend has to be drawn in the same code scope as the
+# tcanvas. So return the tlegend and then have the caller draw it. Do
+# not mess with the color of the tefficiency, assume it is already
+# set.
+def get_legend(labels, thisograms):
+    x1 = 0.8;
+    y1 = 0.8;
+    width = 0.15;
+    height = 0.15;
+    x2 = x1 + width;
+    y2 = y1 + width;        
+    legend = ROOT.TLegend(x1, y1, x2, y2)
+
+    for i, thistogram in enumerate(thisograms):
+        legend.AddEntry(thistogram, labels[i], 'f')
+
+    return legend
+
+    
+# Make all efficiency plots from the root files, combining the ones of
+# the same type.
+def get_efficiency_pngs_combined(root_files, labels):
+    tfiles = []
+    for f in root_files:
         tfiles.append(ROOT.TFile.Open(f))
 
-    efficiency_keys = ["trackeff_vs_pT", "trackeff_vs_phi", "trackeff_vs_eta", "fakerate_vs_pT", "fakerate_vs_eta", "fakerate_vs_phi", "duplicationRate_vs_pT", "duplicationRate_vs_eta", "duplicationRate_vs_phi"]
+    efficiency_keys = get_efficiency_keys()
 
-    tefficiencies = []
-    
     for key in efficiency_keys:
         tcanvas = ROOT.TCanvas()
-        x1 = 0.8;
-        y1 = 0.8;
-        width = 0.1;
-        height = 0.3;
-        x2 = x1 + width;
-        y2 = y1 + width;        
-        legend = ROOT.TLegend(x1, y1, x2, y2)
         
-        tefficiency = tfiles[0].Get(key)
-        tefficiency.Draw()
-        legend.AddEntry(tefficiency, labels[0], 'f')
+        tefficiencies = []
+        for t in tfiles:
+            tefficiencies.append(t.Get(key))
 
-        tefficiency = tfiles[1].Get(key)
-        tefficiency.SetLineColor(2)
-        tefficiency.Draw('same')
-        legend.AddEntry(tefficiency, labels[1], 'f')
-
-        tefficiency = tfiles[2].Get(key)
-        tefficiency.SetLineColor(3)
-        tefficiency.Draw('same')
-        legend.AddEntry(tefficiency, labels[2], 'f')
-        
-        # The legend must be after histograms.
+        for i, tefficiency in enumerate(tefficiencies):
+            tefficiency.SetLineColor(i + 1)
+            if (i == 0):
+                tefficiency.Draw()
+            else:
+                tefficiency.Draw('same')
+                
+        legend = get_legend(labels, tefficiencies)
         legend.Draw()
         tcanvas.Print(key + '.png')
         tefficiencies = []
 
-    
+# Given the list of paths, get the efficiency histograms and overlay
+# them.  Also, plot the filenames
+def get_total_pngs_multiple(paths, labels):
+    efficiency_keys = get_efficiency_keys()
+    tfiles = []
+    for p in paths:
+        tfiles.append(ROOT.TFile.Open(p))
 
+    for key in efficiency_keys:
+        tcanvas = ROOT.TCanvas()
+        totalhistograms = []
+        
+        for i, t in enumerate(tfiles):
+            tefficiency = t.Get(key)
+            totalhistogram = tefficiency.GetTotalHistogram()
+            # Set the title, because its more descriptive.
+            totalhistogram.SetTitle('Distribution')
+            # Set to false, because it doesnt stack.
+            totalhistogram.SetStats(False)
+            totalhistogram.SetLineColor(i + 1)
+            totalhistograms.append(totalhistogram)
+            
+            if i == 0:
+                totalhistogram.Draw()
+            else:
+                totalhistogram.Draw('same')
+                
+        legend = get_legend(labels, totalhistograms)
+        legend.Draw()
+        tcanvas.Print(key + '.png')
+
+# not used
 def get_total_pngs_single(path):
     # Given the one .root file, get the efficiency histograms and overlay them.
     tfile = ROOT.TFile.Open(path)
@@ -70,50 +129,4 @@ def get_total_pngs_single(path):
         ttext = ROOT.TText()
         totalhistogram.Draw()
         ttext.DrawTextNDC(0.05, 0, path)
-        tcanvas.Print(key + '.png')
-
-def get_total_pngs_multiple(paths, labels):
-    # Given the list of paths, get the efficiency histograms and overlay them.
-    # Also, plot the filenames
-
-    efficiency_keys = ["trackeff_vs_pT", "trackeff_vs_phi", "trackeff_vs_eta", "fakerate_vs_pT", "fakerate_vs_eta", "fakerate_vs_phi", "duplicationRate_vs_pT", "duplicationRate_vs_eta", "duplicationRate_vs_phi"]
-
-    tfiles = []
-    for p in paths:
-        tfiles.append(ROOT.TFile.Open(p))
-
-    color = 1
-    offset = 0
-    canvas_offset = 100
-    canvas_offset_margin = 0.06
-    text_offset = 0.04
-
-    for key in efficiency_keys:
-        tcanvas = ROOT.TCanvas()
-        # tcanvas.SetCanvasSize(1000, 500 + canvas_offset * len(paths))
-        x1 = 0.85;
-        y1 = 0.6;
-        width = 0.1;
-        height = 0.3;
-        x2 = x1 + width;
-        y2 = y1 + width;        
-        legend = ROOT.TLegend(x1, y1, x2, y2)
-        
-        for i, tfile in enumerate(tfiles):
-            tefficiency = tfile.Get(key)
-            totalhistogram = tefficiency.GetTotalHistogram()
-            totalhistogram.SetLineColor(i + 1)
-            totalhistogram.Draw('same')
-            legend.AddEntry(totalhistogram, labels[i], 'f')
-
-        ROOT.gPad.SetBottomMargin(canvas_offset_margin * len(paths))
-        for i, tfile in enumerate(tfiles):
-            ttext = ROOT.TText()
-            ttext.SetTextSize(0.03)
-            path = pathlib.Path(paths[i])
-            important_parts_of_path = str('/'.join(path.parts[-3:]))
-            ttext.DrawTextNDC(0, 0.01 + i * text_offset, labels[i] + ' ' + important_parts_of_path)
-            ttext.Draw()
-            
-        legend.Draw()
         tcanvas.Print(key + '.png')
