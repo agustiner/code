@@ -8,8 +8,8 @@ import get_trial_pngs
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('command')
-    # parser.add_argument('--path', nargs=3)
-    # parser.add_argument('--label', nargs=3)
+    parser.add_argument('--path', nargs=3)
+    parser.add_argument('--label', nargs=3)
     args = parser.parse_args()
 
     if args.command == 'optimize_optuna':
@@ -31,6 +31,12 @@ def main():
 
     if args.command == 'get_efficiency_pngs_combined':
         get_trial_pngs.get_efficiency_pngs_combined(args.path, args.label)
+
+    if args.command == 'get_total_pngs':
+        get_trial_pngs.get_total_pngs(args.path)
+
+    if args.command == 'get_total_pngs_multiple':
+        get_trial_pngs.get_total_pngs_multiple(args.path, args.label)
 
 if __name__ == "__main__":
     main()
