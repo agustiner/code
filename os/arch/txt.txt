@@ -23,16 +23,16 @@ ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
-echo "archlinux" > /etc/hostname
+echo "arch" > /etc/hostname
 locale-gen
 useradd -m user1
 passwd user1
 passwd
+poweroff
 cp wpa_supplicant.service /etc/systemd/system/
 cp dhcpcd.service /etc/systemd/system/
 cp wpa_supplicant.conf /etc/
 cp dhcpcd.conf /etc/
-poweroff
 systemctl enable wpa_supplicant dhcpcd
 systemctl start wpa_supplicant dhcpcd
 pacman -S xorg xterm xcalib firefox i3-wm maim thunar gvfs pulseaudio pulseaudio-alsa alsa-utils base-devel man-db xerces-c git git-lfs pcre gcc gcc-fortran make cmake libxml2 gsl cfitsio gl2ps libafterimage blas liburing eigen boost python tk tbb z3 ghostscript xxhash

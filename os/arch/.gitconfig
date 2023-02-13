@@ -9,7 +9,12 @@
 	s = status
 	t = rev-parse --show-toplevel
 [user]
-	email = "agustin423@icloud.com"
+	email = "ar1@stanford.edu"
 	name = "Agustin Romero"
 [core]
 	editor = vim
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true

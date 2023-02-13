@@ -6,7 +6,7 @@ After=dhcpcd.service
 Type=oneshot
 Environment="TERM=dumb"
 RemainAfterExit=true
-ExecStart=/bin/bash -c "/usr/bin/cpupower frequency-set --governor powersave; /usr/bin/cpupower frequency-set --min 1.2GHz; /usr/bin/cpupower frequency-set --max 1.2GHz; /usr/sbin/powertop --auto-tune"
+ExecStart=/bin/bash -c "/usr/bin/cpupower frequency-set --governor powersave; /usr/bin/cpupower frequency-set --max 1.2GHz; /usr/sbin/powertop --auto-tune"
 
 [Install]
 WantedBy=multi-user.target
