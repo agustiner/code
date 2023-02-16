@@ -39,7 +39,7 @@ class Objective:
 
         # We need to delete the trackstates_ckf.root and tracksummary_ckf.root files
         # after the CKFPerformanceWriter is done making performance_ckf.root, because
-        # those two files are about 4 GB on average, which is too big to store.
+        # those two files are about 4 GB on average, which is too big to store for my setup.
         
 
         # should probably move this somewhere else.

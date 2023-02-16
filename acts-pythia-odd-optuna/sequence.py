@@ -1,4 +1,3 @@
-
 # n_max_seeds_per_sp_m number of compatible 
 # cot_theta_max cot of maximum theta angle
 # sigmaScattering How many sigmas of scattering to include in seeds
@@ -42,6 +41,9 @@ def getActsSourcePath():
 def getOpenDataDetectorPath():
     return getActsSourcePath() / "thirdparty" / "OpenDataDetector"
 
+# Run the Sequence, starting from instantiating events and ending
+# with reconstructed tracks. This sequence may be put into an
+# optimizer trial function.
 def run(output_path,
         maxSeedsPerSpM,
         cotThetaMax,
@@ -51,10 +53,7 @@ def run(output_path,
         maxPtScattering,
         deltaRMin,
         deltaRMax):
-    # Run the Sequence, starting from instantiating events and ending
-    # with reconstructed tracks. This sequence may be put into an
-    # optimizer trial function.
-    
+
     # Input
     #
     # Output
@@ -78,7 +77,7 @@ def run(output_path,
 
     # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
     # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 100,
+    s = acts.examples.Sequencer(events = 1,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -128,8 +127,6 @@ def run(output_path,
             minPt= 500 * u.MeV,
             impactMax = impactMax * u.mm,
         ),
-        # Slightly annoying, there are two input types for seeding,
-        # SeedFinderOptionsArg and SeedFinderConfigArg
         SeedFinderOptionsArg(
              bFieldInZ = 1.99724 * u.T,
         ),
