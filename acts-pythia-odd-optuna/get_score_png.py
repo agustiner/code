@@ -1,4 +1,3 @@
-# Make a plot of just the Study's score as a function of trial.
 import optuna
 from matplotlib import pyplot
 
@@ -33,6 +32,7 @@ def get_study_figure(points, xaxis_string, yaxis_string):
 
     return figure
 
+# Make a plot of just the Study's score as a function of trial.
 def get_score_png(study_path):
     study = get_study(study_path)
     points = get_study_scores(study)

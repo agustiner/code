@@ -1,3 +1,4 @@
+# Set keybinds
 set $mod Mod4
 bindsym $mod+Left focus left
 bindsym $mod+Right focus right
@@ -20,20 +21,23 @@ bindsym XF86MonBrightnessUp exec brightnessctl set 10%+
 bindsym XF86AudioMute exec amixer sset Master toggle
 bindsym XF86AudioRaiseVolume exec amixer sset Master Playback 10%+
 bindsym XF86AudioLowerVolume exec amixer sset Master Playback 10%-
+# Set GUI
 client.focused #000000 #000000 #ffffff client.focused_inactive #000000 #000000 #555555
 client.unfocused #000000 #000000 #555555
 default_border none
 workspace_layout tabbed
-# tap
-exec xinput set-prop 13 324 1
-# tap drag
-exec xinput set-prop 13 326 0
-exec xinput set-prop 13 327 0
-# scroll direction
-exec xinput set-prop 13 301 1
-# scroll distance
-exec xinput set-prop 13 321 30
-# Always run xcalib, otherwise not loaded.
 exec xcalib ~/code/os/arch/icc/Color\ LCD-68FE312B-5EF0-E0A1-BCD8-8890B73C7B3A.icc
-# Always run xrdb, otherwise not loaded.
+# Set size of floating windows correctly
+floating_minimum_size 50 x 50
+floating_maximum_size 640 x 480
+# Touchpad tap
+exec xinput set-prop 14 324 1
+# Touchpad tap drag
+exec xinput set-prop 14 326 0
+# Touchpad scroll direction
+exec xinput set-prop 14 301 1
+# Touchpad scroll 
+exec xinput set-prop 14 321 30
+# Set X configs
 exec xrdb -merge ~/.Xresources
+

@@ -44,20 +44,11 @@ def getOpenDataDetectorPath():
 # Run the Sequence, starting from instantiating events and ending
 # with reconstructed tracks. This sequence may be put into an
 # optimizer trial function.
-def run(output_path,
-        maxSeedsPerSpM,
-        cotThetaMax,
-        sigmaScattering,
-        radLengthPerSeed,
-        impactMax,
-        maxPtScattering,
-        deltaRMin,
-        deltaRMax):
-
-    # Input
-    #
-    # Output
-    # 
+# Input
+#
+# Output
+# 
+def run(output_path, param_dict):
     logger = acts.logging.getLogger("full_chain_odd")
     logger.info("Starting Sequence")
     truthSmearedSeeded = False
@@ -77,7 +68,7 @@ def run(output_path,
 
     # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
     # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 1,
+    s = acts.examples.Sequencer(events = 100,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -116,16 +107,16 @@ def run(output_path,
         ParticleSmearingSigmas(pRel = 0.01),
         SeedFinderConfigArg(
             r=(None, 200 * u.mm),
-            deltaR=(deltaRMin * u.mm, deltaRMax * u.mm),
+            deltaR=(param_dict['deltaRMin'] * u.mm, param_dict['deltaRMax'] * u.mm),
             collisionRegion = (-250 * u.mm, 250 * u.mm),
             z=(-2000 * u.mm, 2000 * u.mm),
-            maxSeedsPerSpM = maxSeedsPerSpM,
-            cotThetaMax = cotThetaMax,
-            sigmaScattering = sigmaScattering,
-            radLengthPerSeed = radLengthPerSeed,
-            maxPtScattering = maxPtScattering * u.GeV,
+            maxSeedsPerSpM = param_dict['maxSeedsPerSpM'],
+            cotThetaMax = param_dict['cotThetaMax'],
+            sigmaScattering = param_dict['sigmaScattering'],
+            radLengthPerSeed = param_dict['radLengthPerSeed'],
+            maxPtScattering = param_dict['maxPtScattering'] * u.GeV,
             minPt= 500 * u.MeV,
-            impactMax = impactMax * u.mm,
+            impactMax = param_dict['impactMax'] * u.mm,
         ),
         SeedFinderOptionsArg(
              bFieldInZ = 1.99724 * u.T,

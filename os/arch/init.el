@@ -13,8 +13,7 @@
 			     yaml-mode
 			     )
  TeX-install-font-lock 'ignore
- TeX-view-program-list '(("firefox" "firefox %o"))
- TeX-view-program-selection '((output-pdf "firefox"))
+ TeX-electric-math (cons "$" "$")
  confirm-nonexistent-file-or-buffer nil
  create-lockfiles 0
  header-line-format '("%b")
@@ -31,34 +30,33 @@
 
 (setenv "PATH" "/usr/local/texlive/2022/bin/x86_64-linux:$PATH" t)
 (delete-selection-mode 1)
-(electric-indent-mode 1)
+(electric-indent-mode 0)
 (electric-pair-mode 1)
 (global-font-lock-mode 0)
 (menu-bar-mode 0)
 (scroll-bar-mode 0)
 (show-paren-mode 1)
 (tool-bar-mode 0)
-(xterm-mouse-mode 1)
 
-(global-set-key (kbd "C-c t") (lambda () (interactive) (save-buffer nil) (TeX-command-run-all nil)))
-(global-set-key (kbd "s-a") 'mark-whole-buffer)
-(global-set-key (kbd "s-c") 'kill-ring-save)
-(global-set-key (kbd "s-x") 'kill-region)
-(global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-f") 'ido-find-file)
-(global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "s-d") (lambda () (interactive) (find-file ".")))
-(global-set-key (kbd "M-v") 'yank-pop)
 (global-set-key (kbd "C--") 'undo)
 (global-set-key (kbd "C-0") 'delete-window)
 (global-set-key (kbd "C-\\") 'kill-this-buffer)
 (global-set-key (kbd "C-]") 'kill-whole-line)
 (global-set-key (kbd "C-c g l") 'git-link)
+(global-set-key (kbd "C-c t") (lambda () (interactive) (save-buffer nil) (TeX-command-run-all nil)))
 (global-set-key (kbd "M-<down>") 'move-text-down)
 (global-set-key (kbd "M-<up>") 'move-text-up)
-(global-set-key (kbd "M-o") 'other-window)
 (global-set-key (kbd "M-m") 'mc/mark-all-like-this)
 (global-set-key (kbd "M-n") 'mc/mark-next-like-this)
+(global-set-key (kbd "M-o") 'other-window)
+(global-set-key (kbd "M-v") 'yank-pop)
+(global-set-key (kbd "s-a") 'mark-whole-buffer)
+(global-set-key (kbd "s-c") 'kill-ring-save)
+(global-set-key (kbd "s-d") (lambda () (interactive) (find-file ".")))
+(global-set-key (kbd "s-f") 'ido-find-file)
+(global-set-key (kbd "s-s") 'save-buffer)
+(global-set-key (kbd "s-v") 'yank)
+(global-set-key (kbd "s-x") 'kill-region)
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -92,18 +90,7 @@
   (interactive)
   (mapc 'kill-buffer (remove (current-buffer) (buffer-list))))
 (global-set-key (kbd "C-q") #'delete-other-buffers)
-
-(defun set-selection-in-replace ()
-  (interactive)
-  (if mark-active
-      (let ((region (funcall region-extract-function nil)))
-	(minibuffer-with-setup-hook
-	    (lambda () (insert region))
-	  (goto-char (region-beginning))
-	  (deactivate-mark)
-	  (call-interactively 'query-replace)))
-    (call-interactively 'query-replace)))
-(global-set-key (kbd "M-%") #'set-selection-in-replace)
+(add-hook 'doc-view-mode-hook 'auto-revert-mode)
 
 (defun set-next-line () (interactive) (move-end-of-line 1) (newline) (indent-for-tab-command))
 (global-set-key (kbd "C-<return>") #'set-next-line)
@@ -126,12 +113,8 @@
 (global-set-key (kbd "C-c e") (lambda () (interactive) (shell-command (format termstring (eval default-directory)))))
 
 (add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode)))
-(add-hook 'LaTeX-mode-hook (electric-indent-local-mode 0))
-(add-hook 'tex-mode-hook (electric-indent-local-mode 0))
-
 (defun save-all () (interactive) (save-some-buffers t))
 (add-hook 'focus-out-hook 'save-all)
-
 (defun set-selection-in-search ()
   (when mark-active
     (deactivate-mark)

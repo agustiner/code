@@ -9,16 +9,15 @@ timedatectl set-ntp true
 hwclock --systohc
 pacman -Sy
 pacman -S archlinux-keyring
-fdisk 20
-mkfs.ext4
-mount /dev/sda2 /mnt
+fdisk 20 sda1
+mkfs.ext4 sda1
+mount /dev/sda1 /mnt
 mkdir /mnt/boot
-mount /dev/sda1 /mnt/boot
-pacstrap /mnt base linux linux-firmware wpa_supplicant broadcom-wl dhcpcd vim grub efibootmgr
+mount /dev/sda2 /mnt/boot
+pacstrap /mnt base linux linux-firmware wpa_supplicant broadcom-wl dhcpcd vim efibootmgr
 genfstab -U /mnt > /mnt/etc/fstab
 arch-chroot /mnt
-grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=arch
-grub-mkconfig -o /boot/grub/grub.cfg
+efibootmgr --create --disk /dev/sda --part 1 --label "arch" --loader /vmlinuz-linux --unicode 'root=block_device_identifier rw initrd=\initramfs-linux.img'
 ln -sf /usr/share/zoneinfo/UTC /etc/localtime
 ln -s /dev/null /etc/udev/rules.d/80-net-setup-link.rules
 echo "LANG=en_US.UTF-8" > /etc/locale.conf

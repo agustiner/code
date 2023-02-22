@@ -12,30 +12,24 @@ class Objective:
         self.output_path = output_path
 
     def __call__(self, trial):
-        # Run the trial, return its score.       
-        maxSeedsPerSpM = trial.suggest_int("maxSeedsPerSpM", 0, 10)
-        cotThetaMax = trial.suggest_float("cotThetaMax", 5.0, 10.0)
-        sigmaScattering = trial.suggest_float("sigmaScattering", 0.2, 50)
-        radLengthPerSeed = trial.suggest_float("radLengthPerSeed", 0.001, 0.1)
-        impactMax = trial.suggest_float("impactMax", 0.1, 25)
-        maxPtScattering = trial.suggest_float("maxPtScattering", 1, 50)
-        deltaRMin = trial.suggest_float("deltaRMin", 0.25, 30)
-        deltaRMax = trial.suggest_float("deltaRMax", 50, 300)
+        # Run the trial, return its score.
+        param_dict = {
+            'maxSeedsPerSpM': trial.suggest_int("maxSeedsPerSpM", 0, 10),
+            'cotThetaMax': trial.suggest_float("cotThetaMax", 5.0, 10.0),
+            'sigmaScattering': trial.suggest_float("sigmaScattering", 0.2, 50),
+            'radLengthPerSeed': trial.suggest_float("radLengthPerSeed", 0.001, 0.1),
+            'impactMax': trial.suggest_float("impactMax", 0.1, 25),
+            'maxPtScattering': trial.suggest_float("maxPtScattering", 1, 50),
+            'deltaRMin': trial.suggest_float("deltaRMin", 0.25, 30),
+            'deltaRMax': trial.suggest_float("deltaRMax", 50, 300)
+        }
 
         trial_path = self.output_path / ('trial_' + str(trial.number))
         trial_path.mkdir()
         root_path = trial_path / "performance_ckf.root"
         timing_path = trial_path / 'timing.tsv'
         
-        sequence.run(trial_path,
-                     maxSeedsPerSpM,
-                     cotThetaMax,
-                     sigmaScattering,
-                     radLengthPerSeed,
-                     impactMax,
-                     maxPtScattering,
-                     deltaRMin,
-                     deltaRMax)
+        sequence.run(trial_path, param_dict)
 
         # We need to delete the trackstates_ckf.root and tracksummary_ckf.root files
         # after the CKFPerformanceWriter is done making performance_ckf.root, because
