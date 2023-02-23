@@ -75,7 +75,7 @@ def run(output_path, param_dict):
         s,
         cmsEnergy = 14 * acts.UnitConstants.TeV,
         hardProcess = ["Top:qqbar2ttbar=on"],
-        npileup = 80,
+        npileup = 100,
         vtxGen = acts.examples.GaussianVertexGenerator(
             stddev = acts.Vector4(0.0125 * u.mm, 0.0125 * u.mm, 55.5 * u.mm, 5.0 * u.ns),
             mean = acts.Vector4(0, 0, 0, 0),
@@ -87,7 +87,7 @@ def run(output_path, param_dict):
         s,
         trackingGeometry,
         field,
-        ParticleSelectorConfig(eta = (-3, 3), pt = (150 * u.MeV, None), removeNeutral = True),
+        ParticleSelectorConfig(eta = (1.5, 3), pt = (150 * u.MeV, None), removeNeutral = True),
         rnd = rnd,
     )
     
@@ -103,7 +103,7 @@ def run(output_path, param_dict):
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(eta = (-3, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),        
+        TruthSeedRanges(eta = (1.5, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),        
         ParticleSmearingSigmas(pRel = 0.01),
         SeedFinderConfigArg(
             r=(None, 200 * u.mm),
