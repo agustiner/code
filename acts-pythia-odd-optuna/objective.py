@@ -7,8 +7,6 @@ import json
 
 class Objective:
     def __init__(self, output_path):
-        self.k_dup = 5
-        self.k_time = 5
         self.output_path = output_path
 
     def __call__(self, trial):
@@ -73,7 +71,7 @@ class Objective:
         )
         cur_runtime = time_ckf + time_seeding
 
-        penalty = cur_fakerate_tracks + cur_duplicaterate_tracks / self.k_dup
+        penalty = cur_fakerate_tracks / 2 + cur_duplicaterate_tracks / 4
         score = cur_eff_particles - penalty
 
         return score
