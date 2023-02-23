@@ -76,7 +76,12 @@ def get_efficiency_pngs_combined(root_files, labels):
                 tefficiency.Draw()
             else:
                 tefficiency.Draw('same')
-                
+
+            ROOT.gPad.Update()
+            graph = tefficiency.GetPaintedGraph()
+            graph.SetMinimum(0)
+            graph.SetMaximum(1)
+
         legend = get_legend(labels, tefficiencies)
         legend.Draw()
         tcanvas.Print(key + '.png')
