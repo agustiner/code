@@ -4,18 +4,18 @@ import pathlib
 def get_efficiency_keys():
     return ["trackeff_vs_pT", "trackeff_vs_phi", "trackeff_vs_eta", "fakerate_vs_pT", "fakerate_vs_eta", "fakerate_vs_phi", "duplicationRate_vs_pT", "duplicationRate_vs_eta", "duplicationRate_vs_phi"]
 
-def get_efficiency_png(tefficiency, name):
+def get_efficiency_png(tefficiency, filename, dirpath):
     tcanvas = ROOT.TCanvas()
     tefficiency.Draw()
-    tcanvas.Print(name + '.png')
+    tcanvas.Print(str(dirpath / (filename + '.png')))
 
-def get_efficiency_pngs(root_filename):
+def get_efficiency_pngs(root_path):
     efficiency_keys = get_efficiency_keys()
-    tfile = ROOT.TFile.Open(root_filename)
+    tfile = ROOT.TFile.Open(str(root_path))
     
     for key in efficiency_keys:
         tefficiency = tfile.Get(key)
-        get_efficiency_png(tefficiency, key)
+        get_efficiency_png(tefficiency, key, root_path.parent)
 
 # Given root_files, labels, and a current canvas, add text to the
 # bottom stating the files and labels
