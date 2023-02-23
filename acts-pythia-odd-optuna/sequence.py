@@ -68,7 +68,7 @@ def run(output_path, param_dict):
 
     # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
     # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 200,
+    s = acts.examples.Sequencer(events = 1,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -87,7 +87,7 @@ def run(output_path, param_dict):
         s,
         trackingGeometry,
         field,
-        ParticleSelectorConfig(eta = (-1.5, 1.5), pt = (150 * u.MeV, None), removeNeutral = True),
+        ParticleSelectorConfig(eta = (1.5, 3), pt = (150 * u.MeV, None), removeNeutral = True),
         rnd = rnd,
     )
     
@@ -103,7 +103,7 @@ def run(output_path, param_dict):
         s,
         trackingGeometry,
         field,
-        TruthSeedRanges(eta = (-1.5, 1.5), pt = (1.0 * u.GeV, None), nHits = (9, None)),        
+        TruthSeedRanges(eta = (1.5, 3), pt = (1.0 * u.GeV, None), nHits = (9, None)),        
         ParticleSmearingSigmas(pRel = 0.01),
         SeedFinderConfigArg(
             r=(None, 200 * u.mm),
