@@ -68,7 +68,7 @@ def run(output_path, param_dict):
 
     # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
     # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 1,
+    s = acts.examples.Sequencer(events = 100,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
@@ -133,8 +133,7 @@ def run(output_path, param_dict):
         s,
         trackingGeometry,
         field,
-        CKFPerformanceConfig(ptMin = 1.0 * u.GeV,
-                             nMeasurementsMin = 6),
+        CKFPerformanceConfig(ptMin = 1.0 * u.GeV, nMeasurementsMin = 6),
         writeTrajectories = False,
         outputDirRoot = output_path
     )
