@@ -133,7 +133,7 @@ def run(output_path, param_dict):
         s,
         trackingGeometry,
         field,
-        CKFPerformanceConfig(ptMin = 1.0 * u.GeV, nMeasurementsMin = 3),
+        CKFPerformanceConfig(ptMin = 1.0 * u.GeV, nMeasurementsMin = 6),
         writeTrajectories = False,
         outputDirRoot = output_path
     )
