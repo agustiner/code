@@ -1,0 +1,320 @@
+\documentclass{article}
+\usepackage{babel}
+\usepackage[includefoot]{geometry}
+\usepackage{/home/user1/code/tex/sty}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{floatrow}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage[backend=bibtex]{biblatex}
+\addbibresource{bib.bib}
+\floatsetup[figure]{objectset=centering}
+\floatsetup[subfigure]{objectset=centering}
+\hypersetup{colorlinks=true,citecolor=black,linkcolor=black}
+\setlength{\parindent}{0pt}
+\title{Research Report}
+\author{Agustin Romero\thanks{ar1@stanford.edu}}
+
+\newcommand{\pic}[2]{\beg{center}{\includegraphics[height=#1]{#2}}}
+
+\newcommand{\figpic}[3]{
+\begin{figure}[H]
+\begin{center}
+\pic{#1}{#2}
+\caption{#3}
+\end{center}
+\end{figure}}
+
+\newcommand{\figtab}[3]{
+\begin{table}[H]
+\begin{tabular}{#1}
+#2
+\end{tabular}
+\caption{#3}
+\end{table}}
+
+\n{abseta}{$|\eta|<$}
+\n{ttbar}{$t\bar{t}$~}
+\n{qqbar}{$q\bar{q}$~}
+\newcommand{\romax}[0]{_{\textrm{max}}}
+\newcommand{\romin}[0]{_{\textrm{min}}}
+\newcommand{\pt}[0]{p_\textrm{T}}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+The purpose of this paper is to fully describe the research to simulate \ttbar collisions in the Open Data Detector, perform vertex and track reconstruction in ACTS, then find parameters that achieve highest tracking efficiency. This includes the method of research, results, and discussion on what succeeded and what failed to achieve the research goal.
+
+\section{Background}
+
+ATLAS analyses use \abseta~2.5. After the HL-LHC upgrade, ATLAS will use \abseta~4. The goal of this research is to improve the efficiency of tracking and reconstruction, both in accuracy of reconstruction and computational time efficiency.
+
+\subsection{pp at high $|\eta|$}
+
+\subsection{Detector ``transition regtion''}
+
+It is difficult for the CKF algorithm to reconstruct tracks which pass through the barrel strips into the end strips.
+
+\figpic{5cm}{2.png}{Example of a track which passes from the barrel to the end cap. As $|\eta|$ lowers the track's points rightward in this diagram. These tracks are more difficult to reconstruct.}
+
+\figpic{5cm}{3.png}{Plot of track fake rate as a function of eta. In the transition region, there is a spike in fake rate, indicating worse performance by the CKF algorithm.}
+
+\section{Method}
+
+The motivation is to apply track reconstruction to separate parts of the detector. One set of parameters was be optimized for the end cap, and another set of parameters for the barrel. 
+
+% \figpic{5cm}{1.png}{Concept of the optimization procedure. Optimize reconstruction parameters for the end cap, and again for the barrel.}
+
+In simulation, scattering events have more simultaneous collisions than soft scattering. \ttt{vx} and \ttt{vy} have high precision, $\pm 16 \mu m$. \ttt{vz} has low precision, $\pm 100 mm$. The most important distributions are Efficiency vs. $\eta$, Efficiency vs. $p_T$. Efficiency vs. $\phi$ is not important. ``Restructed track candidates'' refers to reconstructed track seeds. ``Truth matched'' refers to the number of tracks matched to truth matched. The hits from the pile up events that are placed in tracks are called ``fake.'' The low momentum tracks won't travel as far through the detector, so their reconstruction is statistically less likely because those tracks have significantly less data available to be reconstructed. The cutoff for $p_T$ is $>$ 10 MeV. Sometimes a 1 GeV cutoff is also used. ``Duplication'' refers to two tracks which are linked to the same particle.
+
+\section{Simulation}
+
+\subsection{Detector}
+
+The magnetic field is a solenoid magnet. The magnetic field applies passive material only. rmin = 1160 mm, rmax = 1200 mm, 3 m long. The magnetic field used is not identical to the field used by physics analyses. The passive material is defined as the material from $x_0$ < 2, $\lambda_0$ < 0.42, and $|eta|$ < 4. The detector is divided into the following components: beam pipe, Pixels, PST, short strips, long strips, solenoid. The pixel material is divided into the following material. The detector geometry used was the Open Data Detector. For historical background, in 2008 the reconstruction algorithms used an interaction region which was Gaussian, 5.6 cm in the beam axis, and 15 $\mu$m transverse to the beam \cite{Piacquadio2008}.
+
+\begin{itemize}
+\item Four cylindrical barrel layers of radii 34 mm, 70 mm, 116 mm, 172 mm
+\item Barrel: 14 sensors per stave, cooling pipe surrounded by carbon foam, 2492 total
+\item Pixel endcaps: disks at ±z 620 mm, 720 mm, 840 mm, 980 mm, 1120 mm, 1320 mm 1520 mm
+\item Rings: 2 rings: 24, 36 modules, 420 sensors per endcap
+\end{itemize}
+
+Short strips. Carbon foam body with titanium cooling pipe. The short strip material is divided into the following material.
+
+\begin{itemize}
+\item Four barrel layers at r 260 mm, 360 mm, 500 mm, 660 mm
+\item 40 to 102 staves, 21 sensors each
+\item Endcaps disks at ±z 1300 mm, 1550 mm, 1850 mm, 2200 mm, 2550 mm, 2950 mm
+\item Three rings of 42, 756 sensors in total
+\end{itemize}
+
+The long strip material is conventional strip sensors in stereo pairs. The long strip material is divided into the following material.
+
+\begin{itemize}
+\item Two barrel layers at r 820 mm, 1020 mm, 60/80 staves of 21 sensors
+\item Silicon sensors on kapton boards, carbon foam blocks, titanium cooling pipes
+\item Endcaps disks at ±z 1300 mm, 1600 mm, 1900 mm, 2250 mm, 2600 mm, 3000 mm
+\item Two rings of 48×2 sensors
+\end{itemize}
+
+A \ita{sequence} is an ordered list of algorithms beginning at event generation, through CKF reconstruction, and ending at the CKF efficiency analyzer. A \ita{trial} is one sequence which generates only one event using one set of parameters. A \ita{score} is a number calculated given the efficiencies from one trial.
+
+\figtab{l l}{Pileup & 10\\
+Vertex x-axis $\sigma$ [mm] & 0.0125\\
+Vertex y-axis $\sigma$ [mm] & 0.0125\\
+Vertex z-axis $\sigma$ [mm] & 55.5\\
+Vertex t-axis $\sigma$ [ns] & 5}{Parameters used for event generation of vertices.}
+
+% \figtab{l l}{Truth Seed Range $\pt$ [MeV] & 500\\
+% r [mm] & 200\\
+% \Delta r & Optimized from }
+
+The following equations are used to evaluate the performance of the CKF algorithm. The default parameters used for tracking is used below. Most of these parameters were originally hand tuned. Next, they will be optimized.
+
+\subsection{Event Generation}
+
+\qqbar $\rightarrow$ \ttbar events were simulated at energy 14 TeV, with 140 pileup particles, using Pythia, and tracked using ACTS.
+
+The event generator used was Pythia.
+
+\subsection{Propagation}
+
+Fatras was used to simulate particle propagation through the detector medium and enegy deposition. FATRAS will always remove neutral particles in its propagation. The ``geometry selection file'' is used for space point geometry selection.
+
+\subsection{Kalman Filter algorithm}
+
+\subsection{Seed finding}
+
+The default seeding algorithm is used, which uses no truth information. The seeding algorithm constructs track seeds from space points. The seeding algorithm has these steps:
+
+\begin{enumerate}
+\item Within the inner detector, select the first three layers.
+\item Select one point in layer 2 that has been assigned to $\leq$ $MaxSeedPerSpM$ number of seeds.
+\item Search for one point in layer 1, and one point in layer 3 that that would be compatible as a seed.
+\item Add one seed with those three points to the list of seeds.
+\end{enumerate}
+
+\subsection{Track fitting}
+
+\subsection{Track finding}
+
+The truth seed selector selects truth particles to be used as seeds of the reconstruction track fitter and reconstruction track finder. The truth particle can be selected with the following parameters:
+
+\begin{enumerate}
+\item Minimum and maximum distance to from the origin along transverse plane
+\item Minimum and maximum distance from the origin along z
+\item Min (max) $\phi$
+\item Min (max) $\eta$
+\item Min (max) $|\eta|$
+\item Min (max) $\pt$.
+\item Min (max) number of hits. 
+\item Whether to keep neutral particles.
+\end{enumerate}
+
+\subsection{Evaluation}
+
+These are equations used for evaluating the CKF reconstruction algorithm. Specifically we are interested in \eqref{score}, \eqref{eff}, \eqref{trackfakerate}, and \eqref{trackduplicaterate}.
+
+\e{\label{eff}\rom{Particle efficiency}=\fr{\rom{Number of matched particles}}{\rom{Number of true particles}}}
+
+\e{\rom{Particle fake rate}=\fr{\rom{Number of unmatched seed particles}}{\rom{Number of seed particles}}}
+
+\e{\rom{Particle duplicate rate}=\fr{\rom{Nmber of duplicate particles}}{\rom{Number of true particles}}}
+
+\e{\rom{Track efficiency}=\fr{\rom{Number of matched tracks}}{\rom{Number of tracks}}}
+
+\e{\label{trackfakerate}\rom{Track fake rate}=\fr{\rom{Number of fake tracks}}{\rom{Number of tracks}}}
+
+The target track fake rate should be much less than 10 $\%$.
+
+\e{\label{trackduplicaterate}\rom{Track duplicate rate}=\fr{\rom{Number of duplicate tracks}}{\rom{Number of tracks}}}
+
+The target track duplicate rate should be 50 $\%$ or less.
+
+\e{\rom{Average duplicate seed number}=\fr{\rom{Number of matched seeds}-\rom{Number matched particles}}{\rom{Number of matched particles}}}
+
+\subsection{\label{spnfuad}Simulation Parameters}
+
+These are the most significant simulation parameters. Some are held constant. The variable parameters are optimized.
+
+\begin{enumerate}
+\item Pileup [\#]: The number of soft processes to simulate alongside one hard process.
+\item CMS Energy [GeV]: The center of mass energy of the symmetric pp collision.
+\item QCD parameters: The QCD parameters to put into the event generator. Always ``Top:qqbar2ttbar=on''.
+\item Gaussian Vertex $\sigma$ [$\sigma_t$, $\sigma_x$, $\sigma_y$, $\sigma_z$]: The standard deviation of the gaussian vertex from the center of the coordinate system (x,y,z) = (0,0,0). Always (5 ns, 0.0125 mm, 0.0125 mm, 55.5 mm).
+\item B Field $B_x$,$B_y$,$B_z$ [T,T,T]: The magnetic field. Always 0, 0, 2.
+\item Events per sequence [n]: The number of events to simulate per CKF reconstruction algorithm. Always 1.
+\item FATRAS particle selection $\pt$ [GeV]: The minimum $\pt$ for FATRAS to propagate a particle. Always 150 MeV.
+\item Truth seed $\pt$ [GeV]: The minimum $\pt$ for the truth seed algorithm. Always 1 GeV.
+\item Truth seed number of hits [\#]: The minimum number of hits for the seed finder to declare a track.
+\item Particle smearing pRel: Always 0.01. The relative momentum resolution used to smear the particle truth information to create track states.
+\item Seed finder r: 200 mm. The bin side of the space point grid.
+\item Seed finder $\Delta r$ min, max: 29, 52 mm. The min (max) distance in r between two measurements within one seed.
+\item Seed finder collision region: -250 to 250 mm. The limiting location of collision region in z.
+\item Seed finder z: -2000 mm to 2000 mm. The limiting location of measurements.
+\item Seed finder max seeds per middle space point: 0. The number of middle space points that can be assigned per space point.
+\item Seed finder max cot theta: 5.16. Maximum cot theta angle.
+\item Seed finder scattering $\sigma$: 46.312. The maximum number of sigmas of scattering angle that should be searched.
+\item Seed finder pT range: 500 MeV to 25.4 GeV. The min (max) pt range of scattering.
+\item Seed finder b Field in Z direction: 1.99724 T. B field in z direction.
+\item Seed finder impact radius max: 0.19345. The max impact parameter to search.
+\item Track parameter estimation delta R: 10 mm, 100 mm. The min (max) deltaR between space points in a seed.
+\item CKF minimum $\pt$: 1 GeV. The minimum pT of a track required in order to consider the track for efficiency measurements.
+\item CKF minimum number of measurements: 6. The minimum number of hits in a track required in order to consider the track for efficiency measurements.
+\end{enumerate}
+
+\subsection{\label{b87dfa0}Optimization}
+\section{Results}
+\subsection{Default parameters}
+\figtab{l l}{Max \textrm{cot}($\theta$) [\textrm{cot}($\theta$)] & 7.406\\
+Max $\Delta R$ [mm] & 60.0\\
+Min $\Delta R$ [mm]  & 1.0\\
+Max $r_\textrm{impact}$ [mm] & 3.0\\
+Max scattering $p_{\textrm{T}}$ [GeV] & 10.0\\
+Max Seeds Per Middle Space Point [n] & 1\\
+Radiation Length Per Seed [\%/100] & 0.1\\
+Scattering $\sigma$ [$\sigma$] & 50
+}{\label{192837a}Initial parameters.}
+\figtab{l l}{
+Particle efficiency &0.982273\\
+Particle fake rate &0.00065096\\
+Particle duplicate rate &0.772914\\
+Track efficiency &0.862905\\
+Track fake rate &0.00199404\\
+Track duplicate rate &0.812663
+}{Efficiencies calculated from N ACTS sequence, 100 events per sequence, 100 pileup per event.}
+\figpic{9cm}{4.png}{Efficiency plots as function of $\eta$, $\phi$, and $\pt$}
+\subsection{$\eta$ from -3 to 3}
+The score function is
+\e{Score = particle efficiency - cur_fakerate_tracks - cur_duplicaterate_tracks / 5 - cur_runtime / 5}
+\figtab{l l}{
+Max \textrm{cot}($\theta$) [\textrm{cot}($\theta$)] & 7.999982642 $\pm$ 1.551268963\\
+Max $\Delta R$ [mm] & 96.55565929 $\pm$ 84.71230109\\
+Min $\Delta R$ [mm]  & 14.49822582 $\pm$ 3.979233489\\
+Max $r_\textrm{impact}$ [mm] & 7.204453723 $\pm$ 8.598550912\\
+Max scattering $p_{\textrm{T}}$ [GeV] & 23.05472119 $\pm$ 14.2070444\\
+Max Seeds Per Middle Space Point [n] & 0 $\pm$0\\
+Radiation Length Per Seed & 0.04088986151 $\pm$ 0.0202557741\\
+Scattering $\sigma$ [$\sigma$] & 19.67420817 $\pm$ 7.811039786\\
+}{Optimized parameters.}
+\subsection{$\eta$ from -3 to 3, Efficiency Only}
+100 trials. The score function is
+\e{score=efficiency}
+\figpic{6cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/score.png}{Plot of score per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/efficiency_per_trial/grid.png}{Efficiency per trial.}
+For the best trial,
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/grid.png}{Efficiency using the optimized parameters.}
+\subsection{$\eta$ from 1.5 to 3, Efficiency only}
+The score function is 
+\e{score=efficiency}
+\figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/score.png}{Plot of score per trial}
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/efficiency_per_trial/grid.png}{Efficiency per trial.}
+For the best trial,
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/grid.png}{Efficiency using the optimized parameters.}
+\subsection{$\eta$ from -1.5 to 1.5, Efficiency only}
+The score function is 
+\e{score=efficiency}
+\figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/score.png}{Plot of score per trial}
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/efficiency_per_trial/grid.png}{Efficiency per trial.}
+For the best trial,
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/grid.png}{Efficiency using the optimized parameters.}
+\subsection{$\eta$ from -3 to 3, custom score}
+The score function is 
+\e{score=eff_particles - fakerate_tracks - duplicaterate_tracks / 5}
+\figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/score.png}{Plot of score per trial}
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/efficiency_per_trial/grid.png}{Efficiency per trial.}
+For the best trial,
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/grid.png}{Efficiency using the optimized parameters.}
+\subsection{$\eta$ from -3 to 3, custom score}
+The score function is 
+\e{score=particle eff - track eff / 2 - track duplicates / 4}
+\figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/score.png}{Plot of score per trial}
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/efficiency_per_trial/grid.png}{Efficiency per trial.}
+For the best trial,
+\figpic{9cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/grid.png}{Efficiency using the optimized parameters.}
+\end{document}
+
+% \figpic{7cm}{2023-01-13-00-07-47/Particle efficiency.png}{Particle efficiency when using $\eta$ from -1 to 1.}
+% \figpic{7cm}{2023-01-13-00-07-47/Track duplicate rate.png}{Track duplicate rate when using $\eta$ from -1 to 1.}
+% \figpic{7cm}{2023-01-13-00-07-47/Track fake rate.png}{Track fake rate when using $\eta$ from -1 to 1.}
+% \subsection{Full $\eta$ Range}
+% 100 trials of \ttbar event in the ODD were simulated, and reconstructed using the CKF. This table shows the optimizer's parameters after 100 trials.
+% These plots show the change in reconstruction performance per trial.
+% \figpic{7cm}{score.png}{Plot of \eqref{score}, the score of each trial during optimization. This shows the optimizer is successfully increasing the score of each trial.}
+% \figpic{7cm}{Particle efficiency.png}{Plot of \eqref{eff}, the particle efficiency as a function of number of trials.}
+% \figpic{7cm}{Track fake rate.png}{Plot of \eqref{trackfakerate}, the track fake rate as a function of number of trials.}
+% \figpic{7cm}{Track duplicate rate.png}{Plot of \eqref{trackduplicaterate}, the track duplicate rate as a function of number of trials.}
+% These plots show the change in reconstruction parameters per trial.
+% \figpic{7cm}{cotThetaMax.png}{cotThetaMax}
+% \figpic{7cm}{deltaRMax.png}{deltaRMax}
+% \figpic{7cm}{deltaRMin.png}{deltaRMin}
+% \figpic{7cm}{impactMax.png}{impactMax}
+% \figpic{7cm}{maxPtScattering.png}{maxPtScattering}
+% \figpic{7cm}{maxSeedsPerSpM.png}{maxSeedsPerSpM}
+% \figpic{7cm}{radLengthPerSeed.png}{radLengthPerSeed}
+% \figpic{7cm}{sigmaScattering.png}{sigmaScattering}
+% For simulated \ttbar events, the CKF tracking reconstruction efficiency goes from 80\% near 10 GeV $\pt$~to 65\% near 80 GeV $\pt$. The tracking efficiency as a function of $|\eta|$ is 80\% near $|\eta|$=0, and falls to 50\% near $|\eta|$=3. The tracking efficiency appears uncorrelated as a function of coordinate $\phi$.
+% \section{Discussion}
+% The performance of the CKF reconstruction without any optimization of initial parameters will be used to benchmark further studies that attempt to optimize the seeding and tracking parameters.
+% \section{Conclusion}
+% \ttbar events were simulated using Pythia, and evaulated using the ACTS Combinatorial Kalman Filter. Future studies will run optimization algorithms on the ACTS tracking parameters to improve tracking performance.
+% \section{Appendix}
+% \subsection{List of Symbols}
+% \begin{center}
+% \begin{tabular}{l l}
+% Symbol & Description\\
+% B & Magnetic Field [T]\\
+% \pt & Transverse momentum [eV]
+% \end{tabular}
+% \end{center}
+% Using the parameters in and the optimization procedure in the optimized parameters are found. The efficiency plots as function of eta, phi, and pt use as parameters the CKF minimum pt and minimum number of measurements.
