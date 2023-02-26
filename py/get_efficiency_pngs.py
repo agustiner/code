@@ -4,35 +4,24 @@ import pathlib
 def get_efficiency_keys():
     return ["trackeff_vs_pT", "trackeff_vs_phi", "trackeff_vs_eta", "fakerate_vs_pT", "fakerate_vs_eta", "fakerate_vs_phi", "duplicationRate_vs_pT", "duplicationRate_vs_eta", "duplicationRate_vs_phi"]
 
-def get_efficiency_png(tefficiency, filename, dirpath):
+def get_efficiency_titles():
+    return ['Track Efficiency', 'Track Efficiency', 'Track Efficiency', 'Track Fake Rate', 'Track Fake Rate', 'Track Fake Rate', 'Track Duplicate Rate', 'Track Duplicate Rate', 'Track Duplicate Rate']
+
+def get_efficiency_png(tefficiency, title, filename, dirpath):
     tcanvas = ROOT.TCanvas()
     tefficiency.Draw()
+    tefficiency.SetTitle(title)
     tcanvas.Print(str(dirpath / (filename + '.png')))
 
 def get_efficiency_pngs(root_path):
     efficiency_keys = get_efficiency_keys()
+    efficiency_titles = get_efficiency_titles()
     tfile = ROOT.TFile.Open(str(root_path))
     
-    for key in efficiency_keys:
+    for i, key in enumerate(efficiency_keys):
         tefficiency = tfile.Get(key)
-        get_efficiency_png(tefficiency, key, root_path.parent)
-
-# Given root_files, labels, and a current canvas, add text to the
-# bottom stating the files and labels
-def set_debug_text(root_files, labels, tcanvas):
-    canvas_offset = 100
-    canvas_offset_margin = 0.06
-    text_offset = 0.04
-    
-    tcanvas.SetCanvasSize(2000, 500 + canvas_offset * len(root_files))
-    ROOT.gPad.SetBottomMargin(canvas_offset_margin * len(root_files))
-    for i, root_file in enumerate(root_files):
-        ttext = ROOT.TText()
-        ttext.SetTextSize(0.03)
-        path = pathlib.Path(root_file)
-        important_parts_of_path = str('/'.join(path.parts[-3:]))
-        ttext.DrawTextNDC(0, 0.01 + i * text_offset, labels[i] + ' ' + important_parts_of_path)
-        ttext.Draw()
+        title = efficiency_titles[i]
+        get_efficiency_png(tefficiency, title, key, root_path.parent)
 
 # Get the legend for these histograms with these labels. For some
 # reason, the legend has to be drawn in the same code scope as the
@@ -56,27 +45,26 @@ def get_legend(labels, thisograms):
     
 # Make all efficiency plots from the root files, combining the ones of
 # the same type.
-def get_efficiency_pngs_combined(root_files, labels):
-    tfiles = []
-    for f in root_files:
-        tfiles.append(ROOT.TFile.Open(f))
-
+def get_efficiency_pngs_combined(dirstrings, labels):
+    dirpaths = [pathlib.Path(d) for d in dirstrings]
+    rootpaths = [d / 'performance_ckf.root' for d in dirpaths]
+    tfiles = [ROOT.TFile.Open(str(r)) for r in rootpaths]
     efficiency_keys = get_efficiency_keys()
-
-    for key in efficiency_keys:
+    efficiency_titles = get_efficiency_titles()
+    for i, key in enumerate(efficiency_keys):
         tcanvas = ROOT.TCanvas()
-        
         tefficiencies = []
         for t in tfiles:
             tefficiencies.append(t.Get(key))
 
-        for i, tefficiency in enumerate(tefficiencies):
-            tefficiency.SetLineColor(i + 1)
-            if (i == 0):
+        for j, tefficiency in enumerate(tefficiencies):
+            tefficiency.SetLineColor(j + 1)
+            if (j == 0):
                 tefficiency.Draw()
             else:
                 tefficiency.Draw('same')
 
+            tefficiency.SetTitle(efficiency_titles[i])
             ROOT.gPad.Update()
             graph = tefficiency.GetPaintedGraph()
             graph.SetMinimum(0)
@@ -85,5 +73,4 @@ def get_efficiency_pngs_combined(root_files, labels):
         legend = get_legend(labels, tefficiencies)
         legend.Draw()
         tcanvas.Print(key + '.png')
-        tefficiencies = []
 
