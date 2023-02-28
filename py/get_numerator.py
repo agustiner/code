@@ -47,6 +47,7 @@ def get_numerator_pngs_multiple(paths, labels):
 
 def get_numerator_pngs_single(path):
     tfile = ROOT.TFile.Open(path)
+
     efficiency_keys = get_efficiency_keys()
 
     for key in efficiency_keys:
@@ -54,7 +55,5 @@ def get_numerator_pngs_single(path):
         totalhistogram = tefficiency.GetTotalHistogram()
         tcanvas = ROOT.TCanvas()
         tcanvas.SetCanvasSize(2000, 500)
-        ttext = ROOT.TText()
         totalhistogram.Draw()
-        ttext.DrawTextNDC(0.05, 0, path)
         tcanvas.Print(key + '.png')
