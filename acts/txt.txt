@@ -1,9 +1,6 @@
-git clone https://github.com/acts-project/acts
-rmdir source/thirdparty/OpenDataDetector
 ln -s /home/user1/code/odd/source /home/user1/code/acts/source/thirdparty/OpenDataDetector
-cmake -DCMAKE_INSTALL_PREFIX=/home/user1/code/acts/install -DACTS_BUILD_EXAMPLES_DD4HEP=ON -DACTS_BUILD_EXAMPLES_GEANT4=ON -DPythia8_INCLUDE_DIR=/home/user1/code/pythia/build/include -DPythia8_LIBRARY=/home/user1/code/pythia/build/lib/libpythia8.so -DACTS_BUILD_EXAMPLES_PYTHIA8=ON -DACTS_BUILD_EXAMPLES_PYTHON_BINDINGS=ON -DACTS_BUILD_FATRAS=ON -DACTS_BUILD_FATRAS_GEANT4=ON -DACTS_BUILD_ODD=ON -DACTS_BUILD_PLUGIN_DD4HEP=ON -DHepMC3_DIR=/home/user1/code/hepmc/install/share/HepMC3/cmake -DACTS_BUILD_EXAMPLES_HEPMC3=ON -B build -S source
+cmake -DCMAKE_INSTALL_PREFIX=/home/user1/code/acts/install -DACTS_BUILD_EXAMPLES_DD4HEP=ON -DACTS_BUILD_EXAMPLES_GEANT4=ON -DPythia8_INCLUDE_DIR=/home/user1/code/pythia/build/include -DPythia8_LIBRARY=/home/user1/code/pythia/build/lib/libpythia8.so -DACTS_BUILD_EXAMPLES_PYTHIA8=ON -DACTS_BUILD_EXAMPLES_PYTHON_BINDINGS=ON -DACTS_BUILD_FATRAS=ON -DACTS_BUILD_FATRAS_GEANT4=ON -DACTS_BUILD_PLUGIN_DD4HEP=ON -DHepMC3_DIR=/home/user1/code/hepmc/install/share/HepMC3/cmake -DACTS_BUILD_EXAMPLES_HEPMC3=ON -B build -S source
 cmake --build build
-cmake --build build --target help
 
 ./build/bin/ActsExamplePythia8 --events=10 --output-dir=data/gen/ttbar_mu140 --output-csv --rnd-seed=42 --gen-cms-energy-gev=14000  --gen-hard-process=Top:qqbar2ttbar=on --gen-npileup=140
 

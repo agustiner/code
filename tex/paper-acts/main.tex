@@ -15,9 +15,7 @@
 \setlength{\parindent}{0pt}
 \title{Research Report}
 \author{Agustin Romero\thanks{ar1@stanford.edu}}
-
 \newcommand{\pic}[2]{\beg{center}{\includegraphics[height=#1]{#2}}}
-
 \newcommand{\figpic}[3]{
 \begin{figure}[H]
 \begin{center}
@@ -25,7 +23,19 @@
 \caption{#3}
 \end{center}
 \end{figure}}
-
+\n{sco}{\rom{score}}
+\n{peff}{\rom{particle efficiency}}
+\n{pdup}{\rom{particle duplicate rate}}
+\n{pfak}{\rom{particle fake rate}}
+\n{teff}{\rom{track efficiency}}
+\n{tdup}{\rom{track duplicate rate}}
+\n{tfak}{\rom{track fak rate}}
+\n{abseta}{$|\eta|<$}
+\n{ttbar}{$t\bar{t}$~}
+\n{qqbar}{$q\bar{q}$~}
+\newcommand{\romax}[0]{_{\textrm{max}}}
+\newcommand{\romin}[0]{_{\textrm{min}}}
+\newcommand{\pt}[0]{p_\textrm{T}}
 \newcommand{\figtab}[3]{
 \begin{table}[H]
 \begin{tabular}{#1}
@@ -33,68 +43,37 @@
 \end{tabular}
 \caption{#3}
 \end{table}}
-
-\n{abseta}{$|\eta|<$}
-\n{ttbar}{$t\bar{t}$~}
-\n{qqbar}{$q\bar{q}$~}
-\newcommand{\romax}[0]{_{\textrm{max}}}
-\newcommand{\romin}[0]{_{\textrm{min}}}
-\newcommand{\pt}[0]{p_\textrm{T}}
-
 \begin{document}
-
 \maketitle
-
 \section{Introduction}
-
 The purpose of this paper is to fully describe the research to simulate \ttbar collisions in the Open Data Detector, perform vertex and track reconstruction in ACTS, then find parameters that achieve highest tracking efficiency. This includes the method of research, results, and discussion on what succeeded and what failed to achieve the research goal.
-
 \section{Background}
-
 ATLAS analyses use \abseta~2.5. After the HL-LHC upgrade, ATLAS will use \abseta~4. The goal of this research is to improve the efficiency of tracking and reconstruction, both in accuracy of reconstruction and computational time efficiency.
-
 \subsection{pp at high $|\eta|$}
-
 \subsection{Detector ``transition regtion''}
-
 It is difficult for the CKF algorithm to reconstruct tracks which pass through the barrel strips into the end strips.
-
-\figpic{5cm}{2.png}{Example of a track which passes from the barrel to the end cap. As $|\eta|$ lowers the track's points rightward in this diagram. These tracks are more difficult to reconstruct.}
-
+\figpic{5cm}{2.png}{Diagram of a track which passes from the barrel to the end cap. As $|\eta|$ lowers the track's points rightward in this diagram. These tracks are more difficult to reconstruct.}
 \figpic{5cm}{3.png}{Plot of track fake rate as a function of eta. In the transition region, there is a spike in fake rate, indicating worse performance by the CKF algorithm.}
-
 \section{Method}
-
 The motivation is to apply track reconstruction to separate parts of the detector. One set of parameters was be optimized for the end cap, and another set of parameters for the barrel. 
-
 % \figpic{5cm}{1.png}{Concept of the optimization procedure. Optimize reconstruction parameters for the end cap, and again for the barrel.}
-
 In simulation, scattering events have more simultaneous collisions than soft scattering. \ttt{vx} and \ttt{vy} have high precision, $\pm 16 \mu m$. \ttt{vz} has low precision, $\pm 100 mm$. The most important distributions are Efficiency vs. $\eta$, Efficiency vs. $p_T$. Efficiency vs. $\phi$ is not important. ``Restructed track candidates'' refers to reconstructed track seeds. ``Truth matched'' refers to the number of tracks matched to truth matched. The hits from the pile up events that are placed in tracks are called ``fake.'' The low momentum tracks won't travel as far through the detector, so their reconstruction is statistically less likely because those tracks have significantly less data available to be reconstructed. The cutoff for $p_T$ is $>$ 10 MeV. Sometimes a 1 GeV cutoff is also used. ``Duplication'' refers to two tracks which are linked to the same particle.
-
-\section{Simulation}
-
 \subsection{Detector}
-
 The magnetic field is a solenoid magnet. The magnetic field applies passive material only. rmin = 1160 mm, rmax = 1200 mm, 3 m long. The magnetic field used is not identical to the field used by physics analyses. The passive material is defined as the material from $x_0$ < 2, $\lambda_0$ < 0.42, and $|eta|$ < 4. The detector is divided into the following components: beam pipe, Pixels, PST, short strips, long strips, solenoid. The pixel material is divided into the following material. The detector geometry used was the Open Data Detector. For historical background, in 2008 the reconstruction algorithms used an interaction region which was Gaussian, 5.6 cm in the beam axis, and 15 $\mu$m transverse to the beam \cite{Piacquadio2008}.
-
 \begin{itemize}
 \item Four cylindrical barrel layers of radii 34 mm, 70 mm, 116 mm, 172 mm
 \item Barrel: 14 sensors per stave, cooling pipe surrounded by carbon foam, 2492 total
 \item Pixel endcaps: disks at ±z 620 mm, 720 mm, 840 mm, 980 mm, 1120 mm, 1320 mm 1520 mm
 \item Rings: 2 rings: 24, 36 modules, 420 sensors per endcap
 \end{itemize}
-
 Short strips. Carbon foam body with titanium cooling pipe. The short strip material is divided into the following material.
-
 \begin{itemize}
 \item Four barrel layers at r 260 mm, 360 mm, 500 mm, 660 mm
 \item 40 to 102 staves, 21 sensors each
 \item Endcaps disks at ±z 1300 mm, 1550 mm, 1850 mm, 2200 mm, 2550 mm, 2950 mm
 \item Three rings of 42, 756 sensors in total
 \end{itemize}
-
 The long strip material is conventional strip sensors in stereo pairs. The long strip material is divided into the following material.
-
 \begin{itemize}
 \item Two barrel layers at r 820 mm, 1020 mm, 60/80 staves of 21 sensors
 \item Silicon sensors on kapton boards, carbon foam blocks, titanium cooling pipes
@@ -102,25 +81,23 @@ The long strip material is conventional strip sensors in stereo pairs. The long 
 \item Two rings of 48×2 sensors
 \end{itemize}
 
-A \ita{sequence} is an ordered list of algorithms beginning at event generation, through CKF reconstruction, and ending at the CKF efficiency analyzer. A \ita{trial} is one sequence which generates only one event using one set of parameters. A \ita{score} is a number calculated given the efficiencies from one trial.
+Some terminology is described here. A \ita{sequence} is an ordered list of algorithms beginning at event generation, through CKF reconstruction, and ending at the CKF efficiency analyzer. A \ita{trial} is one sequence with one set of parameters. A \ita{score} is a number calculated given the efficiencies from one trial.
 
-\figtab{l l}{Pileup & 10\\
+\figtab{l l}{Pileup & 100\\
 Vertex x-axis $\sigma$ [mm] & 0.0125\\
 Vertex y-axis $\sigma$ [mm] & 0.0125\\
 Vertex z-axis $\sigma$ [mm] & 55.5\\
 Vertex t-axis $\sigma$ [ns] & 5}{Parameters used for event generation of vertices.}
 
-% \figtab{l l}{Truth Seed Range $\pt$ [MeV] & 500\\
-% r [mm] & 200\\
-% \Delta r & Optimized from }
+\figtab{l l}{Truth Seed Range $\pt$ [MeV] & 500\\
+r [mm] & 200\\
+\Delta r & Optimized}
 
-The following equations are used to evaluate the performance of the CKF algorithm. The default parameters used for tracking is used below. Most of these parameters were originally hand tuned. Next, they will be optimized.
+The following equations are used to evaluate the performance of the CKF algorithm. The default parameters used for tracking is used below.
 
 \subsection{Event Generation}
 
-\qqbar $\rightarrow$ \ttbar events were simulated at energy 14 TeV, with 140 pileup particles, using Pythia, and tracked using ACTS.
-
-The event generator used was Pythia.
+The event generator used was Pythia. \qqbar $\rightarrow$ \ttbar events were simulated at energy 14 TeV, with 100 pileup particles, using Pythia, and tracked using ACTS.
 
 \subsection{Propagation}
 
@@ -158,7 +135,7 @@ The truth seed selector selects truth particles to be used as seeds of the recon
 
 \subsection{Evaluation}
 
-These are equations used for evaluating the CKF reconstruction algorithm. Specifically we are interested in \eqref{score}, \eqref{eff}, \eqref{trackfakerate}, and \eqref{trackduplicaterate}.
+These are equations used for evaluating the CKF reconstruction algorithm.
 
 \e{\label{eff}\rom{Particle efficiency}=\fr{\rom{Number of matched particles}}{\rom{Number of true particles}}}
 
@@ -178,7 +155,7 @@ The target track duplicate rate should be 50 $\%$ or less.
 
 \e{\rom{Average duplicate seed number}=\fr{\rom{Number of matched seeds}-\rom{Number matched particles}}{\rom{Number of matched particles}}}
 
-\subsection{\label{spnfuad}Simulation Parameters}
+\subsection{\label{spnfuad}Summary of Simulation Parameters}
 
 These are the most significant simulation parameters. Some are held constant. The variable parameters are optimized.
 
@@ -244,44 +221,54 @@ Scattering $\sigma$ [$\sigma$] & 19.67420817 $\pm$ 7.811039786\\
 }{Optimized parameters.}
 \subsection{$\eta$ from -3 to 3, Efficiency Only}
 100 trials. The score function is
-\e{score=efficiency}
+\e{\sco=\peff}
 \figpic{6cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/score.png}{Plot of score per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/efficiency_per_trial/grid.png}{Efficiency per trial.}
 For the best trial,
-\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/grid.png}{Efficiency using the optimized parameters.}
+\figpic{7cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/dup.png}{Plot of score per trial}
+\figpic{7cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/eff.png}{Parameters per trial.}
+\figpic{7cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/fak.png}{Efficiency per trial.}
 \subsection{$\eta$ from 1.5 to 3, Efficiency only}
 The score function is 
-\e{score=efficiency}
-\figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/score.png}{Plot of score per trial}
-\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/parameter_per_trial/grid.png}{Parameters per trial.}
-\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/efficiency_per_trial/grid.png}{Efficiency per trial.}
+\e{\sco=\peff}
+\figpic{6\cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/score.png}{Plot of score per trial}
+\figpic{9\cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9\cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/efficiency_per_trial/grid.png}{Efficiency per trial.}
 For the best trial,
-\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/grid.png}{Efficiency using the optimized parameters.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/dup.png}{Plot of score per trial}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/eff.png}{Parameters per trial.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/fak.png}{Efficiency per trial.}
 \subsection{$\eta$ from -1.5 to 1.5, Efficiency only}
 The score function is 
-\e{score=efficiency}
+\e{\sco=\peff}
 \figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/score.png}{Plot of score per trial}
 \figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/efficiency_per_trial/grid.png}{Efficiency per trial.}
 For the best trial,
-\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/grid.png}{Efficiency using the optimized parameters.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from -3 to 3, custom score}
 The score function is 
-\e{score=eff_particles - fakerate_tracks - duplicaterate_tracks / 5}
+\e{\sco=\preff - \tfak - \tdup/5}
 \figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/score.png}{Plot of score per trial}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/efficiency_per_trial/grid.png}{Efficiency per trial.}
 For the best trial,
-\figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/grid.png}{Efficiency using the optimized parameters.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{7cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from -3 to 3, custom score}
-The score function is 
-\e{score=particle eff - track eff / 2 - track duplicates / 4}
+The score function is
+\e{\sco=\peff - \tfak / 2 -\tdup/4}
 \figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/score.png}{Plot of score per trial}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/efficiency_per_trial/grid.png}{Efficiency per trial.}
 For the best trial,
-\figpic{9cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/grid.png}{Efficiency using the optimized parameters.}
+\figpic{7cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{7cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{7cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \end{document}
 
 % \figpic{7cm}{2023-01-13-00-07-47/Particle efficiency.png}{Particle efficiency when using $\eta$ from -1 to 1.}

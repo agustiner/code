@@ -1,3 +1,6 @@
+find . -name "._*" -exec bash -c 'rm -v "$0"' {} \;
+find . -exec bash -c 'mv "$0" "${0/old/new}"' {} \;
+
 if test -f FILE; then
 else
 fi

@@ -30,7 +30,7 @@
 
 (setenv "PATH" "/usr/local/texlive/2022/bin/x86_64-linux:$PATH" t)
 (delete-selection-mode 1)
-(electric-indent-mode 0)
+(electric-indent-mode 1)
 (electric-pair-mode 1)
 (global-font-lock-mode 0)
 (menu-bar-mode 0)
@@ -124,3 +124,19 @@
 
 (set-face-background 'region "grey")
 (set-face-foreground 'region "black")
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("28eb6d962d45df4b2cf8d861a4b5610e5dece44972e61d0604c44c4aad1e8a9d" default))
+ '(package-selected-packages
+   '(green-is-the-new-black-theme auctex cmake-mode expand-region git-link magit move-text multiple-cursors projectile session tramp-term yaml-mode))
+ '(session-use-package t nil (session)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
