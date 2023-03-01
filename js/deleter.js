@@ -7,27 +7,22 @@ function delete_node(node) {
     var nodes_dict = JSON.parse(nodes_file.toString())
 
     if (node in nodes_dict) {
-	console.log('Deleting node', node)
 	delete nodes_dict[node]
 	fs.writeFileSync('./public/nodes.json', JSON.stringify(nodes_dict))
     }
 
     if (fs.existsSync('./public/' + node + '.json') ) {
-	console.log('Deleting json', node)
 	fs.unlinkSync('./public/' + node + '.json')
     }
 
     if (fs.existsSync('./public/' + node)) {
-	console.log('Deleting png', node)
 	fs.unlinkSync('./public/' + node)
     }
 }
 
 function receive_deletes(app) {
     app.post('/delete', function (req, res) {
-	if (req.body.prompt == 'greenchickadee') {
-	    delete_node(req.body.node)
-	}
+	delete_node(req.body.node)
 	res.sendStatus(200);
     })
 }

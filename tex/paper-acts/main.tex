@@ -24,14 +24,14 @@
 \caption{#3}
 \end{center}
 \end{figure}}
-\n{sco}{\rom{score}}
-\n{peff}{\rom{particle efficiency}}
-\n{pdup}{\rom{particle duplicate rate}}
-\n{pfak}{\rom{particle fake rate}}
-\n{teff}{\rom{track efficiency}}
-\n{tdup}{\rom{track duplicate rate}}
-\n{tfak}{\rom{track fak rate}}
-\n{runtime}
+\n{sco}{\rom{Score}}
+\n{peff}{\rom{Particle Efficiency [frac]}}
+\n{pdup}{\rom{Particle Duplicates [frac]}}
+\n{pfak}{\rom{Particle Fakes [frac]}}
+\n{teff}{\rom{Track Efficiency [frac]}}
+\n{tdup}{\rom{Track Duplicates [frac]}}
+\n{tfak}{\rom{Track Fakes [frac]}}
+\n{runtime}{\rom{Runtime [s]}}
 \n{abseta}{$|\eta|<$}
 \n{ttbar}{$t\bar{t}$~}
 \n{qqbar}{$q\bar{q}$~}
@@ -83,17 +83,15 @@ The long strip material is conventional strip sensors in stereo pairs. The long 
 \item Two rings of 48×2 sensors
 \end{itemize}
 
-Some terminology is described here. A \ita{sequence} is an ordered list of algorithms beginning at event generation, through CKF reconstruction, and ending at the CKF efficiency analyzer. A \ita{trial} is one sequence with one set of parameters. A \ita{score} is a number calculated given the efficiencies from one trial.
-
 \figtab{l l}{Pileup & 100\\
 Vertex x-axis $\sigma$ [mm] & 0.0125\\
 Vertex y-axis $\sigma$ [mm] & 0.0125\\
 Vertex z-axis $\sigma$ [mm] & 55.5\\
 Vertex t-axis $\sigma$ [ns] & 5}{Parameters used for event generation of vertices.}
 
-\figtab{l l}{Truth Seed Range $\pt$ [MeV] & 500\\
-r [mm] & 200\\
-$\Delta$ r & Optimized}
+% \figtab{l l}{Truth Seed Range $\pt$ [MeV] & 500\\
+% r [mm] & 200\\
+% $\Delta$ r & Optimized}{}
 
 The following equations are used to evaluate the performance of the CKF algorithm. The default parameters used for tracking is used below.
 
@@ -189,7 +187,7 @@ These are the most significant simulation parameters. Some are held constant. Th
 \subsection{\label{b87dfa0}Optimization}
 The procedure for optimization is
 \begin{enumerate}
-\item Initialize the optimizer and set the first trial paremters to \fref{192837a}.
+\item Initialize the optimizer and set the first trial paremters to \tref{192837a}.
 \item Run N trials using the following steps.
 \begin{enumerate}
 \item Run one ACTS sequence with one event generated in the ODD.:
@@ -223,22 +221,23 @@ Track efficiency &0.862905\\
 Track fake rate &0.00199404\\
 Track duplicate rate &0.812663
 }{Initial efficiencies calculated from 1 ACTS sequence, with 100 events, with 100 pileup particles per event.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-11-14/single/dup.png}{Initial track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-11-14/single/eff.png}{Initial track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-11-14/single/fak.png}{Initial track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-11-14/single/dup.png}{Initial track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-11-14/single/eff.png}{Initial track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-11-14/single/fak.png}{Initial track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from -3 to 3, custom score}
 The score function is
-\e{\sco = \preff - \tfak - \tdup / 5 - \runtime / 5}
+\e{\sco = \peff - \tfak - \tdup / 5 - \runtime / 5}
 \figtab{l l}{
 Max \textrm{cot}($\theta$) [\textrm{cot}($\theta$)] & 7.999982642 $\pm$ 1.551268963\\
 Max $\Delta R$ [mm] & 96.55565929 $\pm$ 84.71230109\\
 Min $\Delta R$ [mm]  & 14.49822582 $\pm$ 3.979233489\\
 Max $r_\textrm{impact}$ [mm] & 7.204453723 $\pm$ 8.598550912\\
 Max scattering $p_{\textrm{T}}$ [GeV] & 23.05472119 $\pm$ 14.2070444\\
-Max Seeds Per Middle Space Point [n] & 0 $\pm$0\\
+Max Seeds Per Middle Space Point [n] & 0 $\pm$ 0\\
 Radiation Length Per Seed & 0.04088986151 $\pm$ 0.0202557741\\
 Scattering $\sigma$ [$\sigma$] & 19.67420817 $\pm$ 7.811039786\\
 }{Optimized parameters.}
+This optimization was run 7 separate times, 100 trials each, to test how large the uncertainties are on the best trial parameters. No efficiency plots are shown.
 \subsection{$\eta$ from -3 to 3, Efficiency Only}
 The score function is
 \e{\sco=\peff}
@@ -252,13 +251,13 @@ Max Seeds Per Middle Space Point [n] & 6\\
 Radiation Length Per Seed & 0.0012607157984066096\\
 Scattering $\sigma$ [$\sigma$] & 40.60867756209729
 }{Optimized parameters.}
-\figpic{6cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/score.png}{Plot of score per trial.}
+\figpic{6cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/score.png}{Optimizer score per trial..}
 \figpic{9cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-21/2023-02-21-23-06-52/efficiency_per_trial/grid.png}{Efficiency per trial.}
-The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.,
-\figpic{4cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
+The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.
+\figpic{3.5cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-22/2023-02-22-13-30/compare-4/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from 1.5 to 3, Efficiency only}
 The score function is 
 \e{\sco=\peff}
@@ -272,13 +271,13 @@ Max Seeds Per Middle Space Point [n] & 9\\
 Radiation Length Per Seed & 0.050182305379654776\\
 Scattering $\sigma$ [$\sigma$] & 41.62774067749547 
 }{Optimized parameters.}
-\figpic{6\cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/score.png}{Plot of score per trial}
-\figpic{9\cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/parameter_per_trial/grid.png}{Parameters per trial.}
-\figpic{9\cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/efficiency_per_trial/grid.png}{Efficiency per trial.}
-The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.,
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/score.png}{Optimizer score per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/parameter_per_trial/grid.png}{Parameters per trial.}
+\figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-18-01-01/efficiency_per_trial/grid.png}{Efficiency per trial.}
+The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-04-19/compare-4/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from -1.5 to 1.5, Efficiency only}
 The score function is 
 \e{\sco=\peff}
@@ -292,33 +291,53 @@ Max Seeds Per Middle Space Point [n] & 10\\
 Radiation Length Per Seed & 0.029552672847034882\\
 Scattering $\sigma$ [$\sigma$] & 17.750322166919286 
 }{Optimized parameters.}
-\figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/score.png}{Plot of score per trial}
+\figpic{6cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/score.png}{Optimizer score per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-22/2023-02-22-21-04-06/efficiency_per_trial/grid.png}{Efficiency per trial.}
-The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.,
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
+The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-02-45/compare-2/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from -3 to 3, custom score}
 The score function is 
-\e{\sco=\preff - \tfak - \tdup/5}
-\figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/score.png}{Plot of score per trial}
+\e{\sco=\peff - \tfak - \tdup/5}
+\figtab{l l}{
+Max \textrm{cot}($\theta$) [\textrm{cot}($\theta$)] & 9.894147867588261\\
+Max $\Delta R$ [mm] & 78.45827959526429\\
+Min $\Delta R$ [mm] & 22.770804208643327\\
+Max $r_\textrm{impact}$ [mm] & 17.264025370752\\
+Max scattering $p_{\textrm{T}}$ [GeV] & 22.138871404772974\\
+Max Seeds Per Middle Space Point [n] & 7\\
+Radiation Length Per Seed & 0.001526817277071645\\
+Scattering $\sigma$ [$\sigma$] & 33.877560589074356 
+}{Optimized parameters.}
+\figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/score.png}{Optimizer score per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-05-10-03/efficiency_per_trial/grid.png}{Efficiency per trial.}
-The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.,
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
+The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-23/2023-02-23-10-07/compare-1/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \subsection{$\eta$ from -3 to 3, custom score}
 The score function is
 \e{\sco=\peff - \tfak / 2 -\tdup/4}
-\figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/score.png}{Plot of score per trial}
+\figtab{l l}{
+Max \textrm{cot}($\theta$) [\textrm{cot}($\theta$)] & 9.866139016895074\\
+Max $\Delta R$ [mm] & 183.62476842099014\\
+Min $\Delta R$ [mm] & 27.017826961402342\\
+Max $r_\textrm{impact}$ [mm] & 16.705994491748385\\
+Max scattering $p_{\textrm{T}}$ [GeV] & 46.36841479558609\\
+Max Seeds Per Middle Space Point [n] & 10\\
+Radiation Length Per Seed & 0.09965229969028085\\
+Scattering $\sigma$ [$\sigma$] & 1.5604089909909047 
+}{Optimized parameters.}
+\figpic{6cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/score.png}{Optimizer score per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/parameter_per_trial/grid.png}{Parameters per trial.}
 \figpic{9cm}{/home/user1/time/2023-02-23/2023-02-23-12-34-56/efficiency_per_trial/grid.png}{Efficiency per trial.}
-The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.,
-\figpic{4cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
-\figpic{4cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
+The parameters from the trial with the highest score were used to generate 100 events, with 100 pileup particles each. The resulting efficiency plots are below.
+\figpic{3.5cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/dup.png}{Track duplicate fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/eff.png}{Track efficiency fraction as function of $\eta$, $\phi$, and $\pt$.}
+\figpic{3.5cm}{/home/user1/time/2023-02-24/2023-02-24-07-07/compare-2/fak.png}{Track fake fraction as function of $\eta$, $\phi$, and $\pt$.}
 \end{document}
 
 % \figpic{7cm}{2023-01-13-00-07-47/Particle efficiency.png}{Particle efficiency when using $\eta$ from -1 to 1.}
@@ -355,3 +374,4 @@ The parameters from the trial with the highest score were used to generate 100 e
 % \end{tabular}
 % \end{center}
 % Using the parameters in and the optimization procedure in the optimized parameters are found. The efficiency plots as function of eta, phi, and pt use as parameters the CKF minimum pt and minimum number of measurements.
+% Some terminology is described here. A \ita{sequence} is the ordered list of algorithms beginning at event generation, through particle propagation, CKF reconstruction, and ending at the CKF efficiency analyzer. A \ita{trial} is one sequence and one set of parameters. A \ita{score} is the number calculated given the efficiencies from one trial.
