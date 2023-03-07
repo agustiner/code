@@ -6,7 +6,7 @@ import pathlib
 import sys
 
 def optimize():
-    n_trials = 100
+    n_trials = 200
     initial_param_dict = {
         'maxSeedsPerSpM': 1,
         'cotThetaMax': 7.40627,
