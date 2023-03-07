@@ -12,7 +12,7 @@ class Objective:
     def __call__(self, trial):
         # Run the trial, return its score.
         param_dict = {
-            'maxSeedsPerSpM': trial.suggest_int("maxSeedsPerSpM", 0, 10),
+            'maxSeedsPerSpM': trial.suggest_int("maxSeedsPerSpM", 0, 5),
             'cotThetaMax': trial.suggest_float("cotThetaMax", 5.0, 10.0),
             'sigmaScattering': trial.suggest_float("sigmaScattering", 0.2, 50),
             'radLengthPerSeed': trial.suggest_float("radLengthPerSeed", 0.001, 0.1),
