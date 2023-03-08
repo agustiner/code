@@ -71,7 +71,7 @@ class Objective:
         )
         cur_runtime = time_ckf + time_seeding
 
-        penalty = cur_fakerate_tracks / 2 + cur_duplicaterate_tracks / 4
+        penalty = cur_fakerate_tracks / 2 + cur_duplicaterate_tracks / 2
         score = cur_eff_particles - penalty
 
         return score
