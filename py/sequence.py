@@ -66,9 +66,7 @@ def run(output_path, param_dict):
     field = acts.ConstantBField(acts.Vector3(0.0, 0.0, 2.0 * u.T))
     rnd = acts.examples.RandomNumbers(seed=42)
 
-    # events: number of collisions to generate. one performance_ckf.root will be made for all 100 events.
-    # outputDir: where to output the timing.tsv data
-    s = acts.examples.Sequencer(events = 1,
+    s = acts.examples.Sequencer(events = 200,
                                 outputDir = str(output_path))
     
     acts.examples.simulation.addPythia8(
