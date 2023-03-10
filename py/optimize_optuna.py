@@ -4,6 +4,7 @@ import objective
 import optuna
 import pathlib
 import sys
+import get_time_dir
 
 def optimize():
     n_trials = 200
@@ -18,8 +19,7 @@ def optimize():
         'deltaRMax': 60.0
     }
 
-    output_path = pathlib.Path.cwd() / datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
-    output_path.mkdir()
+    output_path = get_time_dir.get_time_dir()
     output_log_path = output_path / 'log.txt'
     study_name = 'study'
     study_path = output_path / (study_name + '.db')

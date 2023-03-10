@@ -4,9 +4,10 @@ import optuna
 import get_figure
 from matplotlib import pyplot
 
-def get_study(path):
+# path to folder containing study.db
+def get_study(study_dirpath):
     study_name = 'study'
-    storage_string = 'sqlite:///{}'.format(str(path / 'study.db'))
+    storage_string = 'sqlite:///{}'.format(str(study_dirpath / 'study.db'))
     study = optuna.load_study(study_name = study_name, storage = storage_string)
     return study
 
