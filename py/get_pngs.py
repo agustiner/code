@@ -18,8 +18,20 @@ def get_pngs_optimization(data_dirstr):
     get_efficiency_per_trial.get_efficiency_per_trial(data_dirpath)
     get_time.get_time(data_dirpath)
 
-# Get all png files to analyze on sequence.
-def get_pngs_single(data_dirstr):
-    data_dirpath = pathlib.Path(data_dirstr)
+def get_pngs_single(data_dirpath):
     get_efficiency_pngs.get_efficiency_pngs(data_dirpath / 'performance_ckf.root')
-    get_efficiency_pngs.get_efficiency_pngs_combined([str(data_dirpath), '/home/user1/time/2023-02-23/2023-02-23-11-14'], ['Optimized', 'Default'])
+    
+# compare the given simulation simulation with the default, range -1.5 to 1.5
+def get_pngs_compare_1p5to1p5(data_dirpath):
+    default_path_1p5to1p5 = pathlib.Path('/home/user1/time/2023-03-10/2023-03-10-07-07-07')
+    get_efficiency_pngs.get_efficiency_pngs_combined([data_dirpath, default_path_1p5to1p5], ['Optimized', 'Default'])
+
+# compare the given simulation simulation with the default, range 1.5 to 3
+def get_pngs_compare_1p5to3(data_dirpath):
+    default_path_1p5to3 = pathlib.Path('/home/user1/code/time/2023-03-10/2023-03-10-07-22-01')
+    get_efficiency_pngs.get_efficiency_pngs_combined([data_dirpath, default_path_1p5to3], ['Optimized', 'Default'])
+    
+# combine low eta, high eta optimizations and compare with default
+def get_pngs_compare_lowhigh_combined():
+    default_path = pathlib.Path('/home/user1/time/2023-02-23/2023-02-23-11-14')
+    pass

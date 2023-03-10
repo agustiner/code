@@ -45,8 +45,7 @@ def get_legend(labels, thisograms):
     
 # Make all efficiency plots from the root files, combining the ones of
 # the same type.
-def get_efficiency_pngs_combined(dirstrings, labels):
-    dirpaths = [pathlib.Path(d) for d in dirstrings]
+def get_efficiency_pngs_combined(dirpaths, labels):
     rootpaths = [d / 'performance_ckf.root' for d in dirpaths]
     tfiles = [ROOT.TFile.Open(str(r)) for r in rootpaths]
     efficiency_keys = get_efficiency_keys()
